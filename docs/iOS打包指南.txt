@@ -1,0 +1,16 @@
+请按照步骤执行：
+flutter clean
+flutter pub get
+flutter build ios --release
+xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath /Users/truezirtechteam/StudioProjects/mathgptpro_mclient_flutter/build/Runner.xcarchive;
+
+签名选项建议手动选择
+
+#Flutter自动打包修改Android iOS项目版本号
+https://www.jianshu.com/p/31d9b70b85c2
+
+AdHoc配置：
+ts_mobile_client_flutter.ipa
+https://corp-internel-file.truezir.com/talesstreet-release/ts_mobile_client_flutter.ipa
+https://corp-internel-file.truezir.com/talesstreet-release/icon57x57.png
+https://corp-internel-file.truezir.com/talesstreet-release/icon512x512.png

@@ -1,0 +1,12 @@
+arch -x86_64 pod repo update --verbose
+arch -x86_64 pod install --repo-update --verbose
+
+arch -x86_64 pod install --verbose
+
+/Users/truezirtechteam/.cocoapods/repos
+/Users/truezirtechteam/Library/Caches/CocoaPods/Pods/Release
+
+在/Users/truezirtechteam/.cocoapods/repos中搜索包名
+可以查看之前的版本能不能用，复制之后修改版本号
+更改位于/Users/truezirtechteam/.cocoapods/repos/trunk的对应的all_pods文件
+

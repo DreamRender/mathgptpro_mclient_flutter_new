@@ -1,0 +1,7 @@
+dart run flutter_native_splash:create
+
+ios splash无法更新问题：https://www.jianshu.com/p/343d4fffdffe
+
+使用：LaunchScreen而不是LaunchScreen.storyboard，否则会出现黑屏现象
+<key>UILaunchStoryboardName</key>
+<string>LaunchScreen</string>

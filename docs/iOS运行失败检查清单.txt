@@ -1,0 +1,8 @@
+执行：
+1 flutter pub upgrade
+2 flutter pub cache repair
+3 flutter clean
+4 flutter pub get
+5（可选择是否升级或重新安装pod）
+6 arch -x86_64 pod repo update --verbose
+7 arch -x86_64 pod install --verbose
