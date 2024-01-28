@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,8 @@ class DialogReceiveCard extends StatefulWidget {
 class _DialogReceiveCardState extends State<DialogReceiveCard> {
   late String outputText = widget.outputText;
   late bool showControlPanel = widget.showControlPanel;
+
+  bool copy = false;
 
   @override
   Widget build(BuildContext context) {
@@ -125,63 +128,51 @@ class _DialogReceiveCardState extends State<DialogReceiveCard> {
                       const AssetImage("public/asset/icon/icon_thumbdown.png")),
             ),
             const Spacer(),
-            Container(
-              padding: EdgeInsets.all(8.w),
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1.w, color: const Color(0xFF9DCAFF)),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Image(
-                      height: 12.w,
-                      width: 12.w,
-                      image: const AssetImage(
-                          "public/asset/icon/question_page_latex_icon.png")),
-                  SizedBox(
-                    width: 8.w,
+            GestureDetector(
+              onTap: () async {
+                //从剪贴板复制
+                await FlutterClipboard.copy(outputText).then((value) async {
+                  setState(() {
+                    copy = true;
+                  });
+                  await Future.delayed(const Duration(seconds: 3));
+                  setState(() {
+                    copy = false;
+                  });
+                });
+              },
+              child: Container(
+                padding: EdgeInsets.all(8.w),
+                margin: EdgeInsets.only(left: 8.w),
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    side:
+                        BorderSide(width: 1.w, color: const Color(0xFF9DCAFF)),
+                    borderRadius: BorderRadius.circular(6),
                   ),
-                  Text(
-                    'Show latex',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w400,
-                      color: UiResource.primaryBlack,
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(8.w),
-              margin: EdgeInsets.only(left: 8.w),
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1.w, color: const Color(0xFF9DCAFF)),
-                  borderRadius: BorderRadius.circular(6),
                 ),
-              ),
-              child: Row(
-                children: [
-                  Image(
-                      height: 12.w,
-                      width: 12.w,
-                      image: const AssetImage(
-                          "public/asset/icon/question_page_copy_icon.png")),
-                  SizedBox(
-                    width: 8.w,
-                  ),
-                  Text(
-                    'Copy latex',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w400,
-                      color: UiResource.primaryBlack,
+                child: Row(
+                  children: [
+                    Image(
+                        height: 12.w,
+                        width: 12.w,
+                        color: Colors.black,
+                        image: AssetImage(copy
+                            ? "public/asset/icon/check.png"
+                            : "public/asset/icon/question_page_copy_icon.png")),
+                    SizedBox(
+                      width: 8.w,
                     ),
-                  )
-                ],
+                    Text(
+                      copy ? 'Copied' : 'Copy latex',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w400,
+                        color: UiResource.primaryBlack,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ],

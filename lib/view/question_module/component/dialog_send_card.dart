@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -27,34 +28,30 @@ class _DialogSendCardState extends State<DialogSendCard> {
   late String? imgUrl = widget.imgUrl;
   late String? imgPath = widget.imgPath;
 
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> returnWidgetList = [];
+  bool copy = false;
+  bool showLatex = false;
 
-    Widget contentWidget;
+  /// 获取文字显示信息
+  Widget getTextWidget() {
+    String showText = "";
+    if (inputText == "" && showLatex == false) {
+      return Container();
+    } else if (inputText == "" && showLatex == true) {
+      showText = parsedText;
+    } else if (inputText != "" && showLatex == false) {
+      showText = inputText;
+    } else if (inputText != "" && showLatex == true) {
+      showText = "$inputText $parsedText";
+    }
 
-    if (imgUrl == null) {
-      contentWidget = Container(
-        width: Get.width,
-        margin: EdgeInsets.only(top: 8.w),
-        padding: EdgeInsets.symmetric(vertical: 18.w, horizontal: 16.w),
-        decoration: ShapeDecoration(
-          color: const Color(0xFFFDFCFF),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          shadows: const [
-            BoxShadow(
-              color: Color(0x140054A7),
-              blurRadius: 7,
-              offset: Offset(0, 0),
-              spreadRadius: 0,
-            )
-          ],
+    return Column(
+      children: [
+        SizedBox(
+          height: 8.w,
         ),
-        child: LaTexT(
+        LaTexT(
           laTeXCode: Text(
-            LatexUtils.convertVersion(inputText),
+            LatexUtils.convertVersion(showText),
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w400,
@@ -62,125 +59,145 @@ class _DialogSendCardState extends State<DialogSendCard> {
             ),
           ),
           breakDelimiter: '\n',
+        )
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> returnWidgetList = [];
+
+    Widget contentWidget = Container(
+      width: Get.width,
+      margin: EdgeInsets.only(top: 8.w),
+      padding: EdgeInsets.symmetric(vertical: 18.w, horizontal: 16.w),
+      decoration: ShapeDecoration(
+        color: const Color(0xFFFDFCFF),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
-      );
-    } else {
-      contentWidget = Container(
-        width: Get.width,
-        margin: EdgeInsets.only(top: 8.w),
-        padding: EdgeInsets.symmetric(vertical: 18.w, horizontal: 16.w),
-        decoration: ShapeDecoration(
-          color: const Color(0xFFFDFCFF),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          shadows: const [
-            BoxShadow(
-              color: Color(0x140054A7),
-              blurRadius: 7,
-              offset: Offset(0, 0),
-              spreadRadius: 0,
-            )
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Get.to(() => NetworkImageDetailPage(
-                    imageUrlList: [imgUrl!], initPosition: 0));
-              },
-              child: CommonNetworkImage(
-                url: imgUrl!,
-                cacheKey: imgPath,
-              ),
-            ),
-            SizedBox(
-              height: inputText == "" ? 0 : 8.w,
-            ),
-            inputText == ""
-                ? Container()
-                : LaTexT(
-                    laTeXCode: Text(
-                      LatexUtils.convertVersion(inputText),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                      ),
-                    ),
-                    breakDelimiter: '\n',
-                  )
-          ],
-        ),
-      );
-    }
+        shadows: const [
+          BoxShadow(
+            color: Color(0x140054A7),
+            blurRadius: 7,
+            offset: Offset(0, 0),
+            spreadRadius: 0,
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          imgUrl == null
+              ? Container()
+              : GestureDetector(
+                  onTap: () {
+                    Get.to(() => NetworkImageDetailPage(
+                        imageUrlList: [imgUrl!], initPosition: 0));
+                  },
+                  child: CommonNetworkImage(
+                    url: imgUrl!,
+                    cacheKey: imgPath,
+                  ),
+                ),
+          getTextWidget()
+        ],
+      ),
+    );
 
     Widget controlPanel = Container(
       margin: EdgeInsets.only(top: 8.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Container(
-            padding: EdgeInsets.all(8.w),
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1.w, color: const Color(0xFF9DCAFF)),
-                borderRadius: BorderRadius.circular(6),
-              ),
-            ),
-            child: Row(
-              children: [
-                Image(
-                    height: 12.w,
-                    width: 12.w,
-                    image: const AssetImage(
-                        "public/asset/icon/question_page_latex_icon.png")),
-                SizedBox(
-                  width: 8.w,
-                ),
-                Text(
-                  'Show latex',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w400,
-                    color: UiResource.primaryBlack,
+          imgUrl == null
+              ? Container()
+              : GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      showLatex = !showLatex;
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(8.w),
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                            width: 1.w, color: const Color(0xFF9DCAFF)),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Image(
+                            height: 12.w,
+                            width: 12.w,
+                            image: const AssetImage(
+                                "public/asset/icon/question_page_latex_icon.png")),
+                        SizedBox(
+                          width: 8.w,
+                        ),
+                        Text(
+                          showLatex ? 'Hide latex' : 'Show latex',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w400,
+                            color: UiResource.primaryBlack,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                )
-              ],
-            ),
-          ),
+                ),
           SizedBox(
             width: 8.w,
           ),
-          Container(
-            padding: EdgeInsets.all(8.w),
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1.w, color: const Color(0xFF9DCAFF)),
-                borderRadius: BorderRadius.circular(6),
-              ),
-            ),
-            child: Row(
-              children: [
-                Image(
-                    height: 12.w,
-                    width: 12.w,
-                    image: const AssetImage(
-                        "public/asset/icon/question_page_copy_icon.png")),
-                SizedBox(
-                  width: 8.w,
+          GestureDetector(
+            onTap: () async {
+              //从剪贴板复制
+              await FlutterClipboard.copy("$inputText $parsedText")
+                  .then((value) async {
+                setState(() {
+                  copy = true;
+                });
+                await Future.delayed(const Duration(seconds: 3));
+                setState(() {
+                  copy = false;
+                });
+              });
+            },
+            child: Container(
+              padding: EdgeInsets.all(8.w),
+              margin: EdgeInsets.only(left: 8.w),
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(width: 1.w, color: const Color(0xFF9DCAFF)),
+                  borderRadius: BorderRadius.circular(6),
                 ),
-                Text(
-                  'Copy latex',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w400,
-                    color: UiResource.primaryBlack,
+              ),
+              child: Row(
+                children: [
+                  Image(
+                      height: 12.w,
+                      width: 12.w,
+                      color: Colors.black,
+                      image: AssetImage(copy
+                          ? "public/asset/icon/check.png"
+                          : "public/asset/icon/question_page_copy_icon.png")),
+                  SizedBox(
+                    width: 8.w,
                   ),
-                )
-              ],
+                  Text(
+                    copy ? 'Copied' : 'Copy latex',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w400,
+                      color: UiResource.primaryBlack,
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],
