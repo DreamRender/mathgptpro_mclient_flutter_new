@@ -17,6 +17,7 @@ import 'package:mathgptpro_mclient_flutter/model/dialog_dto.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_dto.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_input_dto.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_input_response_dto.dart';
+import 'package:mathgptpro_mclient_flutter/model/session_output.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_output_dto.dart';
 import 'package:mathgptpro_mclient_flutter/service/session_service.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/question_image_controller.dart';
@@ -54,6 +55,8 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
 
   bool modeSetModalOpen = false;
 
+  bool onSaveSessionInput = false;
+
   bool onSessionDataLoading = false;
 
   bool onGenerateAnswer = false;
@@ -84,9 +87,17 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
   /// 保存输入数据
   /// 返回Session Uuid
   Future<String> _saveSessionInput(SessionInputDto sessionInputDto) async {
+    setState(() {
+      onSaveSessionInput = true;
+    });
+
     //保存Input
     SessionInputSaveResponseDto sessionInputSaveResponseDto =
         await _sessionService.saveSessionInput(sessionInputDto);
+
+    setState(() {
+      onSaveSessionInput = false;
+    });
 
     return sessionInputSaveResponseDto.sessionUuid ?? "";
   }
@@ -112,16 +123,38 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
       sessionOutputDto.status = "ABORTED";
     }
 
-    _sessionService.saveSessionOutput(sessionOutputDto);
+    await _sessionService.saveSessionOutput(sessionOutputDto);
+  }
+
+  /// 更新Session信息
+  Future<void> updateSessionData(String sessionUuid) async {
+    setState(() {
+      onSessionDataLoading = true;
+    });
+
+    //重新更新一下SessionDto
+    sessionDto = await _getSessionData(sessionUuid);
+
+    List<SingleDialogDto> singleDialogDtoList =
+        _getSingleDialogDtoList(sessionDto!);
+
+    //更新一下UI数据
+    _contentController.singleDialogDtoList = singleDialogDtoList;
+    _contentController.update();
+
+    setState(() {
+      onSessionDataLoading = false;
+    });
   }
 
   /// 加载数据
-  Future<void> _loadData(List<SingleDialogDto> singleDialogDtoList) async {
+  Future<void> _loadOutputData(
+      List<SingleDialogDto> singleDialogDtoList) async {
     if (sessionDto == null) {
       return;
     }
 
-    //1.保证有提问 2.如果有回答了，就不再提交，如果没有回答，会自动重新回答
+    //1.保证有提问 2.如果有回答了，就不再提交
     if (singleDialogDtoList.last.input == null ||
         (singleDialogDtoList.last.output ?? Output()).outputText != null) {
       return;
@@ -150,16 +183,24 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
 
     late StreamSubscription<Uint8List> subscription;
 
-    subscription = rs.data!.stream.listen((event) {
+    subscription = rs.data!.stream.listen((event) async {
       //解答被终止
       if (aborted) {
+        //第一步Cancel Stream
+        subscription.cancel();
+
+        //第二步更新状态
         setState(() {
           //复位
           aborted = false;
           onGenerateAnswer = false;
         });
-        subscription.cancel();
-        _saveSessionOutput();
+
+        //第三步执行数据
+        await _saveSessionOutput();
+
+        await updateSessionData(sessionDto!.uuid!);
+
         return;
       }
 
@@ -200,6 +241,7 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
 
       SingleDialogDto changeDialog = singleDialogDtoList.last;
 
+      //如果是null说明是第一句话，如果不是null，说明是流更新
       if (changeDialog.output == null) {
         changeDialog.output = Output(outputText: content);
       } else {
@@ -217,11 +259,13 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
       _contentController.update();
 
       _listViewScrollToBottom();
-    }, onDone: () {
+    }, onDone: () async {
+      await _saveSessionOutput();
+      await updateSessionData(sessionDto!.uuid!);
+
       setState(() {
         onGenerateAnswer = false;
       });
-      _saveSessionOutput();
     }, onError: (Object object, StackTrace stackTrace) {
       ToastUtils.showErrorToast("Error");
       log("错误：", stackTrace: stackTrace);
@@ -276,8 +320,9 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
     return singleDialogDtoList;
   }
 
+  /// 判断是否正在加载
   isLoading() {
-    return onSessionDataLoading || onGenerateAnswer;
+    return onSaveSessionInput || onSessionDataLoading || onGenerateAnswer;
   }
 
   /// 取消焦点
@@ -309,10 +354,6 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
       return;
     }
 
-    setState(() {
-      onSessionDataLoading = true;
-    });
-
     //清空已输入的数据
     _contentEditController.clear();
     questionImageController.empty();
@@ -328,28 +369,19 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
     //sessionId后有？判定，会自动赋值null
     SessionInputDto sessionInputDto = SessionInputDto(
         sessionId: sessionDto?.id,
-        model: _contentController.model,
+        model: EnumToString.convertToString(_contentController.model)
+            .toUpperCase(),
         inputText: value,
         imgPath: filePath,
         imgName: fileName);
+
     String sessionUuid = await _saveSessionInput(sessionInputDto);
 
-    //重新更新一下SessionDto
-    sessionDto = await _getSessionData(sessionUuid);
+    await updateSessionData(sessionUuid);
 
-    List<SingleDialogDto> singleDialogDtoList =
-        _getSingleDialogDtoList(sessionDto!);
-
-    //更新一下UI数据
-    _contentController.singleDialogDtoList = singleDialogDtoList;
-    _contentController.update();
     _listViewScrollToBottom();
 
-    setState(() {
-      onSessionDataLoading = false;
-    });
-
-    await _loadData(singleDialogDtoList);
+    await _loadOutputData(_contentController.singleDialogDtoList);
   }
 
   /// Dialog组件
@@ -368,6 +400,7 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
     if (singleDialogDto.output != null) {
       columnWidgetList.add(DialogReceiveCard(
         singleDialogDto.output!.outputText ?? "",
+        singleDialogDto.output!.id ?? 0,
         true,
         key: Key(singleDialogDto.output!.outputText ?? ""),
       ));
@@ -759,7 +792,7 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 50),
         curve: Curves.easeOut,
       );
     }
@@ -777,22 +810,10 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
       if (widget.sessionUuid == null) {
         return;
       }
-      setState(() {
-        onSessionDataLoading = true;
-      });
 
-      sessionDto = await _getSessionData(widget.sessionUuid!);
+      await updateSessionData(widget.sessionUuid!);
 
-      List<SingleDialogDto> singleDialogDtoList =
-          _getSingleDialogDtoList(sessionDto!);
-      _contentController.singleDialogDtoList = singleDialogDtoList;
-      _contentController.update();
-
-      _loadData(singleDialogDtoList);
-
-      setState(() {
-        onSessionDataLoading = false;
-      });
+      _listViewScrollToBottom();
     });
   }
 
@@ -979,6 +1000,6 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
 }
 
 class ContentController extends GetxController {
-  String model = EnumToString.convertToString(SessionModelEnum.pro);
+  SessionModelEnum model = SessionModelEnum.pro;
   List<SingleDialogDto> singleDialogDtoList = [];
 }

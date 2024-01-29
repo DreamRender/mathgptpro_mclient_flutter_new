@@ -9,7 +9,8 @@ import 'package:mathgptpro_mclient_flutter/constant/key_value_storage.dart';
 import 'package:mathgptpro_mclient_flutter/service/session_service.dart';
 import 'package:mathgptpro_mclient_flutter/service/system_service.dart';
 import 'package:mathgptpro_mclient_flutter/service/user_service.dart';
-import 'package:mathgptpro_mclient_flutter/state/controller/content_manage_controller.dart';
+import 'package:mathgptpro_mclient_flutter/state/controller/dialog_controller.dart';
+import 'package:mathgptpro_mclient_flutter/state/controller/session_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/navigation_index_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/question_image_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/user_controller.dart';
@@ -25,9 +26,11 @@ class InitApp {
     //图片剪切文件控制器
     Get.put(QuestionImageController(), permanent: true);
     //内容控制器
-    Get.put(ContentManageController(), permanent: true);
+    Get.put(SessionController(), permanent: true);
     //用户数据控制器
     Get.put(UserController(), permanent: true);
+    //对话控制器
+    Get.put(DialogController(), permanent: true);
   }
 
   /// 初始化UI

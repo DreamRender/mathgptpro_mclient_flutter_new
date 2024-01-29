@@ -7,7 +7,7 @@ import 'package:mathgptpro_mclient_flutter/component/pull_to_refresh/common_clas
 import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_history_dto.dart';
 import 'package:mathgptpro_mclient_flutter/service/session_service.dart';
-import 'package:mathgptpro_mclient_flutter/state/controller/content_manage_controller.dart';
+import 'package:mathgptpro_mclient_flutter/state/controller/session_controller.dart';
 import 'package:mathgptpro_mclient_flutter/utils/latex_utils.dart';
 import 'package:mathgptpro_mclient_flutter/utils/toast_utils.dart';
 import 'package:mathgptpro_mclient_flutter/view/question_module/question_answer_page.dart';
@@ -91,8 +91,7 @@ class _HomePageQuestionViewState extends State<HomePageQuestionView>
 
     content = LatexUtils.convertVersion(content).replaceAll("\n", '');
 
-    return GetBuilder<ContentManageController>(
-        builder: (contentManageController) {
+    return GetBuilder<SessionController>(builder: (contentManageController) {
       if (contentManageController.deletedSessionIdList.contains(sessionId)) {
         return Container();
       } else {
@@ -300,10 +299,10 @@ class _HomePageQuestionViewState extends State<HomePageQuestionView>
                   padding:
                       EdgeInsets.symmetric(horizontal: 12.w, vertical: 15.w),
                   decoration: ShapeDecoration(
-                    color: Color(0xFFf9f9f9),
+                    color: const Color(0xFFf9f9f9),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4)),
-                    shadows: [
+                    shadows: const [
                       BoxShadow(
                         color: Color(0x26000000),
                         blurRadius: 6,
@@ -349,7 +348,7 @@ class _HomePageQuestionViewState extends State<HomePageQuestionView>
                                     color: UiResource.primaryBlack,
                                   ),
                                 ),
-                                Text(
+                                const Text(
                                   'Invite a friend to get more coins',
                                   style: TextStyle(
                                     fontSize: 12,
@@ -366,7 +365,7 @@ class _HomePageQuestionViewState extends State<HomePageQuestionView>
                         width: 303.w,
                         height: 0.5.w,
                         margin: EdgeInsets.only(top: 14.w),
-                        color: Color(0xFFDDDDDD),
+                        color: const Color(0xFFDDDDDD),
                       ),
                       SizedBox(
                         height: 14.w,
@@ -400,7 +399,7 @@ class _HomePageQuestionViewState extends State<HomePageQuestionView>
                                     color: UiResource.primaryBlack,
                                   ),
                                 ),
-                                Text(
+                                const Text(
                                   'Upgrade',
                                   style: TextStyle(
                                     fontSize: 12,
@@ -417,7 +416,7 @@ class _HomePageQuestionViewState extends State<HomePageQuestionView>
                         width: 303.w,
                         height: 0.5.w,
                         margin: EdgeInsets.only(top: 14.w),
-                        color: Color(0xFFDDDDDD),
+                        color: const Color(0xFFDDDDDD),
                       ),
                       SizedBox(
                         height: 14.w,
@@ -451,7 +450,7 @@ class _HomePageQuestionViewState extends State<HomePageQuestionView>
                                     color: UiResource.primaryBlack,
                                   ),
                                 ),
-                                Text(
+                                const Text(
                                   'Upgrade',
                                   style: TextStyle(
                                     fontSize: 12,

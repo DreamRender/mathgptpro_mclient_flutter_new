@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
 
-class ContentManageController extends GetxController {
+class SessionController extends GetxController {
   List<int> deletedSessionIdList = [];
 }

@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mathgptpro_mclient_flutter/state/controller/content_manage_controller.dart';
+import 'package:mathgptpro_mclient_flutter/state/controller/session_controller.dart';
 import 'package:mathgptpro_mclient_flutter/constant/session_feedback_enum.dart';
 import 'package:mathgptpro_mclient_flutter/model/put_url_response_dto.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_dto.dart';
@@ -95,7 +95,7 @@ class SessionService {
     bool result = sessionId == int.parse(response.data);
 
     if (result) {
-      ContentManageController contentManageController = Get.find();
+      SessionController contentManageController = Get.find();
       contentManageController.deletedSessionIdList.add(sessionId);
       contentManageController.update();
     }
