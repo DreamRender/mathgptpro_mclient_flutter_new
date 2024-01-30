@@ -8,6 +8,7 @@ import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_history_dto.dart';
 import 'package:mathgptpro_mclient_flutter/service/session_service.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/session_controller.dart';
+import 'package:mathgptpro_mclient_flutter/state/controller/user_controller.dart';
 import 'package:mathgptpro_mclient_flutter/utils/latex_utils.dart';
 import 'package:mathgptpro_mclient_flutter/utils/toast_utils.dart';
 import 'package:mathgptpro_mclient_flutter/view/question_module/question_answer_page.dart';
@@ -229,45 +230,47 @@ class _HomePageQuestionViewState extends State<HomePageQuestionView>
                     ),
                   ),
                   const Spacer(),
-                  Row(
-                    children: [
-                      Image(
-                          width: 16.w,
-                          height: 16.w,
-                          image:
-                              const AssetImage("public/asset/icon/coin.png")),
-                      Container(
-                        margin: EdgeInsets.only(left: 10.w),
-                        child: Text(
-                          '10',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: UiResource.primaryBlack,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 24.w),
-                        child: Image(
+                  GetX<UserController>(builder: (userController) {
+                    return Row(
+                      children: [
+                        Image(
                             width: 16.w,
                             height: 16.w,
-                            image: const AssetImage(
-                                "public/asset/icon/diamond.png")),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 10.w),
-                        child: Text(
-                          '2',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: UiResource.primaryBlack,
+                            image:
+                                const AssetImage("public/asset/icon/coin.png")),
+                        Container(
+                          margin: EdgeInsets.only(left: 10.w),
+                          child: Text(
+                            '${userController.proExtraCredit.value + userController.proPlanCredit.value}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: UiResource.primaryBlack,
+                            ),
                           ),
                         ),
-                      )
-                    ],
-                  )
+                        Container(
+                          margin: EdgeInsets.only(left: 24.w),
+                          child: Image(
+                              width: 16.w,
+                              height: 16.w,
+                              image: const AssetImage(
+                                  "public/asset/icon/diamond.png")),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 10.w),
+                          child: Text(
+                            '${userController.maxPlanCredit.value + userController.maxExtraCredit.value}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: UiResource.primaryBlack,
+                            ),
+                          ),
+                        )
+                      ],
+                    );
+                  })
                 ],
               ),
             ),

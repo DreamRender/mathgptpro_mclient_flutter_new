@@ -198,7 +198,7 @@ class _HomePageMyViewState extends State<HomePageMyView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            'Account',
+                            'Credits',
                             style: TextStyle(
                               color: Color(0xFF666666),
                               fontSize: 16,
