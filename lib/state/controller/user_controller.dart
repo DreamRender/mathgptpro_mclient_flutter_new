@@ -2,6 +2,10 @@ import 'package:get/get.dart';
 
 //用户信息控制器
 class UserController extends GetxController {
+  RxString education = "".obs;
+
+  RxString sub = "".obs;
+
   RxString userFirstName = "".obs;
 
   RxString userLastName = "".obs;

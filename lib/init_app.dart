@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:mathgptpro_mclient_flutter/action/system_action.dart';
 import 'package:mathgptpro_mclient_flutter/action/user_action.dart';
 import 'package:mathgptpro_mclient_flutter/cache/session_cache.dart';
 import 'package:mathgptpro_mclient_flutter/cache/system_cache.dart';
 import 'package:mathgptpro_mclient_flutter/cache/user_cache.dart';
 import 'package:mathgptpro_mclient_flutter/constant/key_value_storage.dart';
+import 'package:mathgptpro_mclient_flutter/model/session_history_dto.dart';
 import 'package:mathgptpro_mclient_flutter/service/session_service.dart';
 import 'package:mathgptpro_mclient_flutter/service/system_service.dart';
 import 'package:mathgptpro_mclient_flutter/service/user_service.dart';
+import 'package:mathgptpro_mclient_flutter/state/controller/constant_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/dialog_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/navigation_index_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/question_image_controller.dart';
@@ -19,6 +22,14 @@ import 'package:mathgptpro_mclient_flutter/utils/dio_utils.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 class InitApp {
+  final UserAction userAction = UserAction();
+
+  final SystemAction systemAction = SystemAction();
+
+  final SessionService sessionService = SessionService();
+
+  final SystemService systemService = SystemService();
+
   /// 框架初始化
   Future<void> frameworkInit() async {
     await GetStorage.init();
@@ -32,6 +43,8 @@ class InitApp {
     Get.put(UserController(), permanent: true);
     //对话控制器
     Get.put(DialogController(), permanent: true);
+    //常量控制器
+    Get.put(ConstantController(), permanent: true);
   }
 
   /// 初始化UI
@@ -55,7 +68,7 @@ class InitApp {
   Future<void> sdkInit() async {
     SentryFlutter.init((options) {
       options.dsn =
-          'https://354b96952db30731c3d4704e53fec55d@o984263.ingest.sentry.io/4505850842316800';
+      'https://354b96952db30731c3d4704e53fec55d@o984263.ingest.sentry.io/4505850842316800';
       //TODO Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring. We recommend adjusting this value in production.
       options.tracesSampleRate = 0.1;
     });
@@ -63,9 +76,12 @@ class InitApp {
 
   /// 系统级数据初始化
   Future<void> appDataInit() async {
-    bool currentVersionAvailable =
-        await SystemService().currentVersionAvailable();
-    globalSystemCache.currentVersionAvailable = currentVersionAvailable;
+    final resultList = await Future.wait([
+      systemService.currentVersionAvailable(),
+      systemAction.updateEducationList()
+    ]);
+
+    globalSystemCache.currentVersionAvailable = resultList[0] as bool;
   }
 
   /// 用户级数据初始化
@@ -92,12 +108,13 @@ class InitApp {
       return;
     }
 
-    UserAction userAction = UserAction();
-    await userAction.updateUserBalance();
-
-    SessionService sessionService = SessionService();
+    final result = await Future.wait([
+      sessionService.getSessionAll(),
+      userAction.updateUserBalance(),
+      userAction.updateUserEducationInfo()
+    ]);
 
     globalSessionCache.sessionHistoryDtoList =
-        await sessionService.getSessionAll();
+        result[0] as List<SessionHistoryDto>;
   }
 }

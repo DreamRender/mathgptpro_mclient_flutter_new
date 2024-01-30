@@ -71,4 +71,11 @@ class MainUrl {
   /// 更新Balance信息
   static String updateBalanceHistory =
       "https://dev-be.mathgptpro.com/history/update";
+
+  /// 获取用户信息
+  static String getUserInfo = "https://dev-be.mathgptpro.com/user/info";
+
+  /// 获取Education List
+  static String getEducationList =
+      "https://dev-be.mathgptpro.com/constants/education-list";
 }

@@ -12,6 +12,8 @@ import 'package:mathgptpro_mclient_flutter/cache/user_cache.dart';
 import 'package:mathgptpro_mclient_flutter/constant/key_value_storage.dart';
 import 'package:mathgptpro_mclient_flutter/constant/main_url.dart';
 import 'package:mathgptpro_mclient_flutter/model/balance_info.dart';
+import 'package:mathgptpro_mclient_flutter/model/education_list.dart';
+import 'package:mathgptpro_mclient_flutter/model/user_info.dart';
 import 'package:mathgptpro_mclient_flutter/utils/dio_utils.dart';
 import 'package:mathgptpro_mclient_flutter/view/welcome_module/login_page.dart';
 
@@ -45,7 +47,7 @@ class UserService {
     Map<String, dynamic> header = {"Authorization": userToken};
 
     String accessKey = (await _dioUtils.post(MainUrl.getAccessKey,
-        options: Options(headers: header)))
+            options: Options(headers: header)))
         .data
         .toString();
 
@@ -81,6 +83,26 @@ class UserService {
     BalanceInfo result = BalanceInfo.fromJson(json.decode(response.data));
 
     return result;
+  }
+
+  /// 获取用户信息
+  Future<UserInfo> getUserInfo() async {
+    dio.Response response = await _dioUtils.getAu(MainUrl.getUserInfo);
+
+    UserInfo result = UserInfo.fromJson(json.decode(response.data));
+
+    return result;
+  }
+
+  /// 获取Education List
+  Future<List<EducationInfo>> getEducationList() async {
+    dio.Response response = await _dioUtils.getAu(MainUrl.getEducationList);
+
+    List<EducationInfo> list = List<EducationInfo>.from(json
+        .decode(response.data)
+        .map((model) => EducationInfo.fromJson(model)));
+
+    return list;
   }
 
   /// 退出登录
