@@ -15,7 +15,7 @@ import 'package:mathgptpro_mclient_flutter/model/balance_info.dart';
 import 'package:mathgptpro_mclient_flutter/model/education_list.dart';
 import 'package:mathgptpro_mclient_flutter/model/user_info.dart';
 import 'package:mathgptpro_mclient_flutter/utils/dio_utils.dart';
-import 'package:mathgptpro_mclient_flutter/view/welcome_module/login_page.dart';
+import 'package:mathgptpro_mclient_flutter/view/welcome_module/welcome_page.dart';
 
 class UserService {
   final DioUtils _dioUtils = DioUtils();
@@ -115,7 +115,7 @@ class UserService {
     //重新加载
     Get.reloadAll(force: true);
     //返回登录页
-    Get.offAll(() => const LoginPage());
+    Get.offAll(() => const WelcomePage());
     //清空所有缓存
     globalSessionCache = SessionCache();
     globalSystemCache = SystemCache();
