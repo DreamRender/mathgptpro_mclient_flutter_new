@@ -9,17 +9,19 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:mathgptpro_mclient_flutter/action/user_action.dart';
 import 'package:mathgptpro_mclient_flutter/component/ui_behavior/refocus_component.dart';
 import 'package:mathgptpro_mclient_flutter/constant/main_url.dart';
 import 'package:mathgptpro_mclient_flutter/constant/session_model_enum.dart';
 import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
+import 'package:mathgptpro_mclient_flutter/model/balance_info.dart';
 import 'package:mathgptpro_mclient_flutter/model/dialog_dto.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_dto.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_input_dto.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_input_response_dto.dart';
-import 'package:mathgptpro_mclient_flutter/model/session_output.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_output_dto.dart';
 import 'package:mathgptpro_mclient_flutter/service/session_service.dart';
+import 'package:mathgptpro_mclient_flutter/service/user_service.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/question_image_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/user_controller.dart';
 import 'package:mathgptpro_mclient_flutter/utils/dio_utils.dart';
@@ -45,9 +47,15 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
 
   final ContentController _contentController = Get.put(ContentController());
 
+  final UserController userController = Get.find();
+
   final QuestionImageController questionImageController = Get.find();
 
   final SessionService _sessionService = SessionService();
+
+  final UserService userService = UserService();
+
+  final UserAction userAction = UserAction();
 
   final DioUtils _dioUtils = DioUtils();
 
@@ -164,9 +172,19 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
       onGenerateAnswer = true;
     });
 
-    DialogDto dialogDto = DialogDto(
-        model: sessionDto!.model, singleDialogDtoList: singleDialogDtoList);
+    /// 使用_contentController内的model，因为可能会切换
+    String model =
+        EnumToString.convertToString(_contentController.model).toUpperCase();
 
+    DialogDto dialogDto =
+        DialogDto(model: model, singleDialogDtoList: singleDialogDtoList);
+
+    // 更新额度信息
+    BalanceInfo balanceInfo = await userService.updateUserBalanceHistory(model);
+
+    await userAction.updateUserBalance(balanceInfo: balanceInfo);
+
+    // 获取JWT
     String? userToken = await _dioUtils.getUserTokenWithUpdateUserInfo();
 
     dio.Response<dio.ResponseBody> rs = await Dio(BaseOptions(
@@ -320,6 +338,18 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
     return singleDialogDtoList;
   }
 
+  ///判断是否额度可用
+  bool isBalanceAvailable() {
+    switch (_contentController.model) {
+      case SessionModelEnum.max:
+        return userController.maxExtraCredit > 0 ||
+            userController.maxPlanCredit > 0;
+      case SessionModelEnum.pro:
+        return userController.proExtraCredit > 0 ||
+            userController.proPlanCredit > 0;
+    }
+  }
+
   /// 判断是否正在加载
   isLoading() {
     return onSaveSessionInput || onSessionDataLoading || onGenerateAnswer;
@@ -345,11 +375,7 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
       return;
     }
 
-    UserController userController = Get.find();
-    int trialCount = userController.trialCount.value;
-    bool subActived = userController.subActived.value;
-
-    if (trialCount < 1 || !subActived) {
+    if (!isBalanceAvailable()) {
       ToastUtils.showSystemToast("模型额度不足".tr);
       return;
     }
@@ -606,6 +632,80 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
     );
   }
 
+  /// 获得Balance组件
+  Widget getBalanceInfoWidget(SessionModelEnum sessionModelEnum) {
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: () => setState(() {
+            modeSetModalOpen = !modeSetModalOpen;
+          }),
+          child: Container(
+            margin: EdgeInsets.only(left: 8.w),
+            padding:
+                EdgeInsets.only(left: 16.w, right: 8.w, top: 4.w, bottom: 4.w),
+            decoration: ShapeDecoration(
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(width: 1, color: Color(0xFFD9D9D9)),
+                borderRadius: BorderRadius.circular(30.r),
+              ),
+            ),
+            child: Row(
+              children: [
+                Text(
+                  sessionModelEnum == SessionModelEnum.max ? 'Max' : 'Pro',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: UiResource.primaryBlack,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 3.w),
+                  child: Icon(Icons.keyboard_arrow_down_outlined,
+                      color: UiResource.primaryBlack),
+                )
+              ],
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: 16.w),
+          child: Image(
+              width: 16.w,
+              height: 16.w,
+              image: AssetImage(sessionModelEnum == SessionModelEnum.max
+                  ? "public/asset/icon/diamond.png"
+                  : "public/asset/icon/coin.png")),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: 10.w),
+          child: GetX<UserController>(builder: (userController) {
+            String value = "";
+            if (sessionModelEnum == SessionModelEnum.max) {
+              value = (userController.maxExtraCredit.value +
+                      userController.maxPlanCredit.value)
+                  .toString();
+            } else {
+              value = (userController.proExtraCredit.value +
+                      userController.proPlanCredit.value)
+                  .toString();
+            }
+            return Text(
+              value,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: UiResource.primaryBlack,
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+
   /// 停止组件
   Widget getStopButton() {
     return GestureDetector(
@@ -655,7 +755,7 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
   }
 
   /// 模式选择器
-  Widget getModeSetModal() {
+  Widget getModeSetModal(SessionModelEnum sessionModelEnum) {
     return Positioned(
         top: 85.w,
         left: 64.w,
@@ -684,26 +784,37 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Pro  ✅',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: UiResource.primaryBlack,
-                    ),
+              GestureDetector(
+                onTap: () {
+                  _contentController.model = SessionModelEnum.pro;
+                  _contentController.update();
+                },
+                child: Container(
+                  width: Get.width,
+                  //如果不加color的话，width会不起作用
+                  color: Colors.transparent,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Pro${sessionModelEnum == SessionModelEnum.pro ? "  ✅" : ""}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: UiResource.primaryBlack,
+                        ),
+                      ),
+                      Text(
+                        'For everyday task',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: UiResource.primaryBlack,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    'For everyday task',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: UiResource.primaryBlack,
-                    ),
-                  ),
-                ],
+                ),
               ),
               Container(
                 width: Get.width,
@@ -714,26 +825,37 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
               SizedBox(
                 height: 14.w,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Max',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: UiResource.primaryBlack,
-                    ),
+              GestureDetector(
+                onTap: () {
+                  _contentController.model = SessionModelEnum.max;
+                  _contentController.update();
+                },
+                child: Container(
+                  width: Get.width,
+                  //如果不加color的话，width会不起作用
+                  color: Colors.transparent,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Max${sessionModelEnum == SessionModelEnum.max ? "  ✅" : ""}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: UiResource.primaryBlack,
+                        ),
+                      ),
+                      Text(
+                        'For complex problem solving',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: UiResource.primaryBlack,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    'For complex problem solving',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: UiResource.primaryBlack,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
@@ -874,64 +996,7 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
                                 size: 36,
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () => setState(() {
-                                modeSetModalOpen = !modeSetModalOpen;
-                              }),
-                              child: Container(
-                                margin: EdgeInsets.only(left: 8.w),
-                                padding: EdgeInsets.only(
-                                    left: 16.w,
-                                    right: 8.w,
-                                    top: 4.w,
-                                    bottom: 4.w),
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(
-                                        width: 1, color: Color(0xFFD9D9D9)),
-                                    borderRadius: BorderRadius.circular(30.r),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Pro',
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: UiResource.primaryBlack,
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(left: 3.w),
-                                      child: Icon(
-                                          Icons.keyboard_arrow_down_outlined,
-                                          color: UiResource.primaryBlack),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 16.w),
-                              child: Image(
-                                  width: 16.w,
-                                  height: 16.w,
-                                  image: const AssetImage(
-                                      "public/asset/icon/coin.png")),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.w),
-                              child: Text(
-                                '10',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: UiResource.primaryBlack,
-                                ),
-                              ),
-                            ),
+                            getBalanceInfoWidget(contentController.model)
                           ],
                         ),
                         const Spacer(),
@@ -990,7 +1055,9 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
                 ],
               ),
               getBottomSheet(),
-              modeSetModalOpen ? getModeSetModal() : Container()
+              modeSetModalOpen
+                  ? getModeSetModal(contentController.model)
+                  : Container()
             ],
           );
         }),

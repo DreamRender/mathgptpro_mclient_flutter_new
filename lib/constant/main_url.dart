@@ -45,9 +45,6 @@ class MainUrl {
   /// 保存输入结果
   static String inputSave = "https://dev-be.mathgptpro.com/session/input/save";
 
-  /// record the current usage history.
-  static String updateHistory = "https://dev-be.mathgptpro.com/history/update";
-
   /// 获得图片保存链接
   static String preSignedPutUrl =
       "https://dev-be.mathgptpro.com/s3/presigned-put-url";
@@ -67,4 +64,11 @@ class MainUrl {
   /// 获取APP版本
   static String getAppVersion =
       "https://dev-be.mathgptpro.com/open-api/get-app-version";
+
+  /// 获取账户余额信息
+  static String getBalanceInfo = "https://dev-be.mathgptpro.com/balance/info";
+
+  /// 更新Balance信息
+  static String updateBalanceHistory =
+      "https://dev-be.mathgptpro.com/history/update";
 }

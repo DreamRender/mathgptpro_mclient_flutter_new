@@ -16,9 +16,6 @@ class KeyValueStorageResource {
   ///用户姓氏
   static String userLastName = "userLastName$timeVersion";
 
-  ///Pro使用量
-  static String trialCount = "trialCount$timeVersion";
-
   ///用户名字
   static String userFirstName = "userFirstName$timeVersion";
 

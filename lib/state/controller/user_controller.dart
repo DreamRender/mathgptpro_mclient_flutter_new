@@ -6,9 +6,15 @@ class UserController extends GetxController {
 
   RxString userLastName = "".obs;
 
-  RxInt trialCount = 0.obs;
-
   RxBool subActived = false.obs;
 
   RxString subStatus = "".obs;
+
+  RxInt proPlanCredit = 0.obs;
+
+  RxInt maxPlanCredit = 0.obs;
+
+  RxInt proExtraCredit = 0.obs;
+
+  RxInt maxExtraCredit = 0.obs;
 }

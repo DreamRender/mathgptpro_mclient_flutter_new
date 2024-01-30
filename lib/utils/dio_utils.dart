@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:dio/dio.dart' as the_dio;
 import 'package:dio/dio.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:mathgptpro_mclient_flutter/action/user_action.dart';
 import 'package:mathgptpro_mclient_flutter/constant/key_value_storage.dart';
 import 'package:mathgptpro_mclient_flutter/constant/main_url.dart';
 import 'package:mathgptpro_mclient_flutter/service/user_service.dart';
-import 'package:mathgptpro_mclient_flutter/utils/jwt_utils.dart';
 
 class DioUtils {
   /// 上一次执行退出的时间
@@ -85,7 +85,7 @@ class DioUtils {
       return null;
     }
 
-    JwtUtils.userInfoInitByJwt(jwt);
+    UserAction().userInfoInitByJwt(jwt);
 
     return jwt;
   }

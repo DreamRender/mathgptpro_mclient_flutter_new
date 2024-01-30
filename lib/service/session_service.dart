@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mathgptpro_mclient_flutter/state/controller/session_controller.dart';
+import 'package:mathgptpro_mclient_flutter/constant/main_url.dart';
 import 'package:mathgptpro_mclient_flutter/constant/session_feedback_enum.dart';
 import 'package:mathgptpro_mclient_flutter/model/put_url_response_dto.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_dto.dart';
@@ -16,7 +16,7 @@ import 'package:mathgptpro_mclient_flutter/model/session_input_dto.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_input_response_dto.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_output.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_output_dto.dart';
-import 'package:mathgptpro_mclient_flutter/constant/main_url.dart';
+import 'package:mathgptpro_mclient_flutter/state/controller/session_controller.dart';
 import 'package:mathgptpro_mclient_flutter/utils/dio_utils.dart';
 
 class SessionService {
@@ -46,16 +46,6 @@ class SessionService {
     }
   }
 
-  ///  record the current usage history.
-  Future<void> updateHistory(
-      int sessionId, int sessionInputId, String model) async {
-    await _dioUtils.postAu(MainUrl.updateHistory, data: {
-      "sessionId": sessionId,
-      "sessionInputId": sessionInputId,
-      "model": model,
-    });
-  }
-
   /// 保存Session输入内容
   Future<SessionInputSaveResponseDto> saveSessionInput(
       SessionInputDto sessionInputDto) async {
@@ -64,12 +54,6 @@ class SessionService {
 
     SessionInputSaveResponseDto sessionInputSaveResponseDto =
         SessionInputSaveResponseDto.fromJson(json.decode(response.data));
-
-    updateHistory(
-      sessionInputSaveResponseDto.sessionId!,
-      sessionInputSaveResponseDto.id!,
-      sessionInputDto.model!,
-    );
 
     return sessionInputSaveResponseDto;
   }
@@ -81,8 +65,6 @@ class SessionService {
 
     dio.Response response = await _dioUtils.postAu(MainUrl.outputSave,
         data: sessionOutputDto.toJson());
-
-    log(response.data.toString());
 
     return SessionOutput.fromJson(json.decode(response.data));
   }

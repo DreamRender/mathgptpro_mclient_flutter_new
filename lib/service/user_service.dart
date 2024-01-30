@@ -1,15 +1,18 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:mathgptpro_mclient_flutter/action/user_action.dart';
 import 'package:mathgptpro_mclient_flutter/cache/session_cache.dart';
 import 'package:mathgptpro_mclient_flutter/cache/system_cache.dart';
 import 'package:mathgptpro_mclient_flutter/cache/user_cache.dart';
 import 'package:mathgptpro_mclient_flutter/constant/key_value_storage.dart';
 import 'package:mathgptpro_mclient_flutter/constant/main_url.dart';
+import 'package:mathgptpro_mclient_flutter/model/balance_info.dart';
 import 'package:mathgptpro_mclient_flutter/utils/dio_utils.dart';
-import 'package:mathgptpro_mclient_flutter/utils/jwt_utils.dart';
 import 'package:mathgptpro_mclient_flutter/view/welcome_module/login_page.dart';
 
 class UserService {
@@ -26,7 +29,7 @@ class UserService {
       return false;
     }
 
-    bool result = JwtUtils.userInfoInitByJwt(jwt);
+    bool result = UserAction().userInfoInitByJwt(jwt);
     if (result) {
       await getAccessKey(jwt);
       return true;
@@ -42,7 +45,7 @@ class UserService {
     Map<String, dynamic> header = {"Authorization": userToken};
 
     String accessKey = (await _dioUtils.post(MainUrl.getAccessKey,
-            options: Options(headers: header)))
+        options: Options(headers: header)))
         .data
         .toString();
 
@@ -59,6 +62,25 @@ class UserService {
     await _dioUtils.postAu(MainUrl.userProfileUpdate, data: data);
 
     return true;
+  }
+
+  /// 获得额度信息
+  Future<BalanceInfo> getBalanceInfo() async {
+    dio.Response response = await _dioUtils.getAu(MainUrl.getBalanceInfo);
+
+    BalanceInfo result = BalanceInfo.fromJson(json.decode(response.data));
+
+    return result;
+  }
+
+  /// 更新额度信息
+  Future<BalanceInfo> updateUserBalanceHistory(String sessionModel) async {
+    dio.Response response = await _dioUtils
+        .postAu(MainUrl.updateBalanceHistory, data: {"model": sessionModel});
+
+    BalanceInfo result = BalanceInfo.fromJson(json.decode(response.data));
+
+    return result;
   }
 
   /// 退出登录

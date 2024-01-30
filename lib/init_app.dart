@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:mathgptpro_mclient_flutter/action/user_action.dart';
 import 'package:mathgptpro_mclient_flutter/cache/session_cache.dart';
 import 'package:mathgptpro_mclient_flutter/cache/system_cache.dart';
 import 'package:mathgptpro_mclient_flutter/cache/user_cache.dart';
@@ -10,9 +11,9 @@ import 'package:mathgptpro_mclient_flutter/service/session_service.dart';
 import 'package:mathgptpro_mclient_flutter/service/system_service.dart';
 import 'package:mathgptpro_mclient_flutter/service/user_service.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/dialog_controller.dart';
-import 'package:mathgptpro_mclient_flutter/state/controller/session_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/navigation_index_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/question_image_controller.dart';
+import 'package:mathgptpro_mclient_flutter/state/controller/session_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/user_controller.dart';
 import 'package:mathgptpro_mclient_flutter/utils/dio_utils.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -90,6 +91,9 @@ class InitApp {
       UserService.logout();
       return;
     }
+
+    UserAction userAction = UserAction();
+    await userAction.updateUserBalance();
 
     SessionService sessionService = SessionService();
 
