@@ -66,16 +66,10 @@ class _UpgradeListPageState extends State<UpgradeListPage> {
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
+                      side:
+                          const BorderSide(width: 1, color: Color(0xFFE1D3FF)),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    shadows: const [
-                      BoxShadow(
-                        color: Color(0x260054A7),
-                        blurRadius: 10,
-                        offset: Offset(0, 0),
-                        spreadRadius: 0,
-                      )
-                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
