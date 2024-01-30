@@ -409,73 +409,73 @@ class _HomePageMyViewState extends State<HomePageMyView> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 2.w,
-                      ),
-                      Container(
-                        width: Get.width,
-                        height: 0.5,
-                        margin: EdgeInsets.only(top: 15.w),
-                        color: const Color(0xFFDDDDDD),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 24.w),
-                        child: const Text(
-                          'Coins by invitation',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w500,
-                            height: 0,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 16.w),
-                        child: Row(
-                          children: [
-                            Image(
-                                width: 20.w,
-                                height: 20.w,
-                                image: const AssetImage(
-                                    "public/asset/icon/coin.png")),
-                            SizedBox(
-                              width: 12.w,
-                            ),
-                            const Text(
-                              'Pro',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF5B00CD),
-                              ),
-                            ),
-                            const Spacer(),
-                            const Text(
-                              '16',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF333333),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 16.w),
-                        child: const Text(
-                          'Invite a friend to get more chats',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF2B95EB),
-                          ),
-                        ),
-                      )
+                      // SizedBox(
+                      //   height: 2.w,
+                      // ),
+                      // Container(
+                      //   width: Get.width,
+                      //   height: 0.5,
+                      //   margin: EdgeInsets.only(top: 15.w),
+                      //   color: const Color(0xFFDDDDDD),
+                      // ),
+                      // Container(
+                      //   alignment: Alignment.centerLeft,
+                      //   margin: EdgeInsets.only(top: 24.w),
+                      //   child: const Text(
+                      //     'Coins by invitation',
+                      //     style: TextStyle(
+                      //       color: Colors.black,
+                      //       fontSize: 14,
+                      //       fontFamily: 'Roboto',
+                      //       fontWeight: FontWeight.w500,
+                      //       height: 0,
+                      //     ),
+                      //   ),
+                      // ),
+                      // Container(
+                      //   margin: EdgeInsets.only(top: 16.w),
+                      //   child: Row(
+                      //     children: [
+                      //       Image(
+                      //           width: 20.w,
+                      //           height: 20.w,
+                      //           image: const AssetImage(
+                      //               "public/asset/icon/coin.png")),
+                      //       SizedBox(
+                      //         width: 12.w,
+                      //       ),
+                      //       const Text(
+                      //         'Pro',
+                      //         style: TextStyle(
+                      //           fontSize: 16,
+                      //           fontWeight: FontWeight.w500,
+                      //           color: Color(0xFF5B00CD),
+                      //         ),
+                      //       ),
+                      //       const Spacer(),
+                      //       const Text(
+                      //         '16',
+                      //         style: TextStyle(
+                      //           fontSize: 14,
+                      //           fontWeight: FontWeight.w500,
+                      //           color: Color(0xFF333333),
+                      //         ),
+                      //       )
+                      //     ],
+                      //   ),
+                      // ),
+                      // Container(
+                      //   alignment: Alignment.centerLeft,
+                      //   margin: EdgeInsets.only(top: 16.w),
+                      //   child: const Text(
+                      //     'Invite a friend to get more chats',
+                      //     style: TextStyle(
+                      //       fontSize: 12,
+                      //       fontWeight: FontWeight.w500,
+                      //       color: Color(0xFF2B95EB),
+                      //     ),
+                      //   ),
+                      // )
                     ],
                   ),
                 ),
