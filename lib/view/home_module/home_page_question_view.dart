@@ -183,97 +183,98 @@ class _HomePageQuestionViewState extends State<HomePageQuestionView>
               height: MediaQuery.of(context).padding.top,
             ),
             Container(
-              height: 48.w,
-              width: Get.width,
-              padding: EdgeInsets.only(
-                  top: 8.w, left: 24.w, right: 24.w, bottom: 8.w),
-              child: Row(
-                children: [
-                  Image(
-                      width: 32.w,
-                      height: 32.w,
-                      image: const AssetImage(
-                          "public/asset/icon/home_page_logo_icon.png")),
-                  GestureDetector(
-                    onTap: () => setState(() {
-                      modeSetModalOpen = !modeSetModalOpen;
-                    }),
-                    child: Container(
-                      margin: EdgeInsets.only(left: 20.w),
-                      padding: EdgeInsets.only(
-                          left: 16.w, right: 8.w, top: 4.w, bottom: 4.w),
-                      decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                              width: 1, color: Color(0xFFD9D9D9)),
-                          borderRadius: BorderRadius.circular(30.r),
+                height: 48.w,
+                width: Get.width,
+                padding: EdgeInsets.only(
+                    top: 8.w, left: 24.w, right: 24.w, bottom: 8.w),
+                child: GetX<UserController>(builder: (userController) {
+                  return Row(
+                    children: [
+                      Image(
+                          width: 32.w,
+                          height: 32.w,
+                          image: const AssetImage(
+                              "public/asset/icon/home_page_logo_icon.png")),
+                      GestureDetector(
+                        onTap: () => setState(() {
+                          modeSetModalOpen = !modeSetModalOpen;
+                        }),
+                        child: Container(
+                          margin: EdgeInsets.only(left: 20.w),
+                          padding: EdgeInsets.only(
+                              left: 16.w, right: 8.w, top: 4.w, bottom: 4.w),
+                          decoration: ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                  width: 1, color: Color(0xFFD9D9D9)),
+                              borderRadius: BorderRadius.circular(30.r),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                userController.subActived.value
+                                    ? 'Premium Plan'
+                                    : 'Free Plan',
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: UiResource.primaryBlack,
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(left: 3.w),
+                                child: Icon(Icons.keyboard_arrow_down_outlined,
+                                    color: UiResource.primaryBlack),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                      child: Row(
+                      const Spacer(),
+                      Row(
                         children: [
-                          Text(
-                            'Free Plan',
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: UiResource.primaryBlack,
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(left: 3.w),
-                            child: Icon(Icons.keyboard_arrow_down_outlined,
-                                color: UiResource.primaryBlack),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  GetX<UserController>(builder: (userController) {
-                    return Row(
-                      children: [
-                        Image(
-                            width: 16.w,
-                            height: 16.w,
-                            image:
-                                const AssetImage("public/asset/icon/coin.png")),
-                        Container(
-                          margin: EdgeInsets.only(left: 10.w),
-                          child: Text(
-                            '${userController.proExtraCredit.value + userController.proPlanCredit.value}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: UiResource.primaryBlack,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 24.w),
-                          child: Image(
+                          Image(
                               width: 16.w,
                               height: 16.w,
                               image: const AssetImage(
-                                  "public/asset/icon/diamond.png")),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 10.w),
-                          child: Text(
-                            '${userController.maxPlanCredit.value + userController.maxExtraCredit.value}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: UiResource.primaryBlack,
+                                  "public/asset/icon/coin.png")),
+                          Container(
+                            margin: EdgeInsets.only(left: 10.w),
+                            child: Text(
+                              '${userController.proExtraCredit.value + userController.proPlanCredit.value}',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: UiResource.primaryBlack,
+                              ),
                             ),
                           ),
-                        )
-                      ],
-                    );
-                  })
-                ],
-              ),
-            ),
+                          Container(
+                            margin: EdgeInsets.only(left: 24.w),
+                            child: Image(
+                                width: 16.w,
+                                height: 16.w,
+                                image: const AssetImage(
+                                    "public/asset/icon/diamond.png")),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 10.w),
+                            child: Text(
+                              '${userController.maxPlanCredit.value + userController.maxExtraCredit.value}',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: UiResource.primaryBlack,
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  );
+                })),
             Expanded(
                 child: RefreshConfiguration(
               child: ScrollConfiguration(
@@ -320,154 +321,164 @@ class _HomePageQuestionViewState extends State<HomePageQuestionView>
                       )
                     ],
                   ),
-                  child: Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image(
-                              width: 24.w,
-                              height: 24.w,
-                              image: const AssetImage(
-                                  "public/asset/icon/home-page-free-plan-icon.png")),
-                          Container(
-                            margin: EdgeInsets.only(left: 12.w),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Free Plan  ✅',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: UiResource.primaryBlack,
+                  child: GetX<UserController>(builder: (userController) {
+                    return Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image(
+                                width: 24.w,
+                                height: 24.w,
+                                image: const AssetImage(
+                                    "public/asset/icon/home-page-free-plan-icon.png")),
+                            Container(
+                              margin: EdgeInsets.only(left: 12.w),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    userController.subActived.value
+                                        ? 'Free Plan'
+                                        : 'Free Plan  ✅',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: UiResource.primaryBlack,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  'Get 10 coins and 2 diamonds for free monthly',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    color: UiResource.primaryBlack,
+                                  Text(
+                                    'Get 10 coins and 2 diamonds for free monthly',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: UiResource.primaryBlack,
+                                    ),
                                   ),
-                                ),
-                                const Text(
-                                  'Invite a friend to get more coins',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xFF2B95EB),
+                                  userController.subActived.value
+                                      ? Container()
+                                      : const Text(
+                                          'Invite a friend to get more coins',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color(0xFF2B95EB),
+                                          ),
+                                        )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        // Container(
+                        //   width: 303.w,
+                        //   height: 0.5.w,
+                        //   margin: EdgeInsets.only(top: 14.w),
+                        //   color: const Color(0xFFDDDDDD),
+                        // ),
+                        // SizedBox(
+                        //   height: 14.w,
+                        // ),
+                        // Row(
+                        //   crossAxisAlignment: CrossAxisAlignment.start,
+                        //   children: [
+                        //     Image(
+                        //         width: 24.w,
+                        //         height: 24.w,
+                        //         image: const AssetImage(
+                        //             "public/asset/icon/home-page-starter-plan-icon.png")),
+                        //     Container(
+                        //       margin: EdgeInsets.only(left: 12.w),
+                        //       child: Column(
+                        //         crossAxisAlignment: CrossAxisAlignment.start,
+                        //         children: [
+                        //           Text(
+                        //             'Starter Plan',
+                        //             style: TextStyle(
+                        //               fontSize: 16,
+                        //               fontWeight: FontWeight.w500,
+                        //               color: UiResource.primaryBlack,
+                        //             ),
+                        //           ),
+                        //           Text(
+                        //             'Get 100 coins and 10 diamonds per month',
+                        //             style: TextStyle(
+                        //               fontSize: 12,
+                        //               fontWeight: FontWeight.w400,
+                        //               color: UiResource.primaryBlack,
+                        //             ),
+                        //           ),
+                        //           const Text(
+                        //             'Upgrade',
+                        //             style: TextStyle(
+                        //               fontSize: 12,
+                        //               fontWeight: FontWeight.w500,
+                        //               color: Color(0xFF2B95EB),
+                        //             ),
+                        //           )
+                        //         ],
+                        //       ),
+                        //     )
+                        //   ],
+                        // ),
+                        Container(
+                          width: 303.w,
+                          height: 0.5.w,
+                          margin: EdgeInsets.only(top: 14.w),
+                          color: const Color(0xFFDDDDDD),
+                        ),
+                        SizedBox(
+                          height: 14.w,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image(
+                                width: 24.w,
+                                height: 24.w,
+                                image: const AssetImage(
+                                    "public/asset/icon/home-page-premuim-plan-icon.png")),
+                            Container(
+                              margin: EdgeInsets.only(left: 12.w),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    userController.subActived.value
+                                        ? 'Premium Plan  ✅'
+                                        : 'Premium Plan',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: UiResource.primaryBlack,
+                                    ),
                                   ),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      Container(
-                        width: 303.w,
-                        height: 0.5.w,
-                        margin: EdgeInsets.only(top: 14.w),
-                        color: const Color(0xFFDDDDDD),
-                      ),
-                      SizedBox(
-                        height: 14.w,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image(
-                              width: 24.w,
-                              height: 24.w,
-                              image: const AssetImage(
-                                  "public/asset/icon/home-page-starter-plan-icon.png")),
-                          Container(
-                            margin: EdgeInsets.only(left: 12.w),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Starter Plan',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: UiResource.primaryBlack,
+                                  Text(
+                                    'Get 3000 coins and 30 diamonds',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: UiResource.primaryBlack,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  'Get 100 coins and 10 diamonds per month',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    color: UiResource.primaryBlack,
-                                  ),
-                                ),
-                                const Text(
-                                  'Upgrade',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xFF2B95EB),
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      Container(
-                        width: 303.w,
-                        height: 0.5.w,
-                        margin: EdgeInsets.only(top: 14.w),
-                        color: const Color(0xFFDDDDDD),
-                      ),
-                      SizedBox(
-                        height: 14.w,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image(
-                              width: 24.w,
-                              height: 24.w,
-                              image: const AssetImage(
-                                  "public/asset/icon/home-page-premuim-plan-icon.png")),
-                          Container(
-                            margin: EdgeInsets.only(left: 12.w),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Premium Plan',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: UiResource.primaryBlack,
-                                  ),
-                                ),
-                                Text(
-                                  'Get 3000 coins and 30 diamonds',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    color: UiResource.primaryBlack,
-                                  ),
-                                ),
-                                const Text(
-                                  'Upgrade',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xFF2B95EB),
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
+                                  Text(
+                                    userController.subActived.value
+                                        ? 'Invite a friend to get more coins'
+                                        : 'Upgrade',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xFF2B95EB),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    );
+                  }),
                 ))
             : Container(),
       ],
