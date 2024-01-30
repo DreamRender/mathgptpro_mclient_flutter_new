@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mathgptpro_mclient_flutter/component/bottom_sheet/upgrade_plan_bottom_sheet.dart';
-import 'package:mathgptpro_mclient_flutter/component/image/common_network_image.dart';
 import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/user_controller.dart';
 
@@ -86,14 +85,19 @@ class _HomePageMyViewState extends State<HomePageMyView> {
                           Container(
                               width: 32.w,
                               height: 32.w,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
+                              padding: EdgeInsets.all(5.w),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      width: 1.w,
+                                      color: const Color(0x6CD8D8D8))),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(16.r),
-                                child: const CommonNetworkImage(
-                                    url:
-                                        "https://t3.ftcdn.net/jpg/02/29/76/08/360_F_229760888_xNSsDETvN5dlWHA2TubbXOuI5nKz6cQu.jpg"),
+                                // ignore: prefer_const_constructors
+                                child: Image(
+                                  image: const AssetImage(
+                                      "public/asset/icon/home_page_logo_icon.png"),
+                                ),
                               )),
                           Container(
                             margin: EdgeInsets.only(left: 8.w),
