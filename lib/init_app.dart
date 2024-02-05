@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:mathgptpro_mclient_flutter/action/system_action.dart';
@@ -7,6 +8,7 @@ import 'package:mathgptpro_mclient_flutter/action/user_action.dart';
 import 'package:mathgptpro_mclient_flutter/cache/session_cache.dart';
 import 'package:mathgptpro_mclient_flutter/cache/system_cache.dart';
 import 'package:mathgptpro_mclient_flutter/cache/user_cache.dart';
+import 'package:mathgptpro_mclient_flutter/constant/app_info.dart';
 import 'package:mathgptpro_mclient_flutter/constant/key_value_storage.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_history_dto.dart';
 import 'package:mathgptpro_mclient_flutter/service/session_service.dart';
@@ -68,10 +70,16 @@ class InitApp {
   Future<void> sdkInit() async {
     SentryFlutter.init((options) {
       options.dsn =
-      'https://354b96952db30731c3d4704e53fec55d@o984263.ingest.sentry.io/4505850842316800';
+          'https://354b96952db30731c3d4704e53fec55d@o984263.ingest.sentry.io/4505850842316800';
       //TODO Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring. We recommend adjusting this value in production.
       options.tracesSampleRate = 0.1;
     });
+
+    // Stipe配置
+    Stripe.publishableKey = MathGPTProAppInfo.stripePublishableKey;
+    Stripe.merchantIdentifier = 'merchant.com.mathgptpro';
+    Stripe.urlScheme = 'flutterstripe';
+    await Stripe.instance.applySettings();
   }
 
   /// 系统级数据初始化

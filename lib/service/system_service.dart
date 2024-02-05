@@ -12,7 +12,7 @@ class SystemService {
   /// 获取APP版本
   Future<bool> currentVersionAvailable() async {
     dio.Response response = (await _dioUtils.get(MainUrl.getAppVersion,
-        paramMap: {"currentVersion": AppInfo.appVersion}));
+        paramMap: {"currentVersion": MathGPTProAppInfo.appVersion}));
 
     AppVersionDto appVersionDto =
         AppVersionDto.fromJson(json.decode(response.data));
