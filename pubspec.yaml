@@ -135,6 +135,9 @@ dependencies:
   #Google登录
   google_sign_in: 6.2.1
 
+  #Apple Sign In
+  sign_in_with_apple: 5.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
