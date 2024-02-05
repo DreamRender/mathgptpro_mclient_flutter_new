@@ -24,6 +24,8 @@ class SignInDemo extends StatefulWidget {
 }
 
 class _SignInDemoState extends State<SignInDemo> {
+  AuthorizationCredentialAppleID? credential = null;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,19 +36,31 @@ class _SignInDemoState extends State<SignInDemo> {
           children: [
             SignInWithAppleButton(
               onPressed: () async {
-                final credential = await SignInWithApple.getAppleIDCredential(
+                credential = await SignInWithApple.getAppleIDCredential(
                   scopes: [
                     AppleIDAuthorizationScopes.email,
                     AppleIDAuthorizationScopes.fullName,
                   ],
                 );
-
-                print(credential);
-
-                // Now send the credential (especially `credential.authorizationCode`) to your server to create a session
-                // after they have been validated with Apple (see `Integration` section for more information on how to do this)
+                setState(() {});
               },
-            )
+            ),
+            const SelectableText("credential?.authorizationCode"),
+            SelectableText("${credential?.authorizationCode}"),
+            const SelectableText("credential?.email"),
+            SelectableText("${credential?.email}"),
+            const SelectableText("credential?.familyName"),
+            SelectableText("${credential?.familyName}"),
+            const SelectableText("credential?.givenName"),
+            SelectableText("${credential?.givenName}"),
+            const SelectableText("credential?.identityToken"),
+            SelectableText("${credential?.identityToken}"),
+            const SelectableText("credential?.state"),
+            SelectableText("${credential?.state}"),
+            const SelectableText("credential?.userIdentifier"),
+            SelectableText("${credential?.userIdentifier}"),
+            const SelectableText("credential"),
+            SelectableText("$credential")
           ],
         ));
   }
