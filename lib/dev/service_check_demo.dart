@@ -26,8 +26,6 @@ class StreamView extends StatefulWidget {
 }
 
 class _StreamViewState extends State<StreamView> {
-  final DioUtils _dioUtils = DioUtils();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
