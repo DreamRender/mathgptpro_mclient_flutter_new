@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latext/latext.dart';
+import 'package:mathgptpro_mclient_flutter/utils/dio_utils.dart';
 
 void main() {
   runApp(const Example());
