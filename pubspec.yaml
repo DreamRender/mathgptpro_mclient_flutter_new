@@ -138,9 +138,6 @@ dependencies:
   #Apple Sign In
   sign_in_with_apple: 5.0.0
 
-  #Strip支付
-  flutter_stripe: 10.0.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

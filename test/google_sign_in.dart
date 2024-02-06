@@ -21,9 +21,8 @@ const List<String> scopes = <String>[
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: scopes,
-    // clientId: "DELETE THIS PARAMETER! OR WILL CAUSE EXCEPTION CODE 10",
-    // serverClientId: "DELETE THIS PARAMETER! OR WILL CAUSE EXCEPTION CODE 10"
-);
+    clientId: "DELETE THIS PARAMETER! OR WILL CAUSE EXCEPTION CODE 10",
+    serverClientId: "DELETE THIS PARAMETER! OR WILL CAUSE EXCEPTION CODE 10");
 // #enddocregion Initialize
 
 void main() {

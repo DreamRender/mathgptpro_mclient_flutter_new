@@ -1,11 +1,6 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:mathgptpro_mclient_flutter/component/bottom_sheet/upgrade_plan_bottom_sheet.dart';
 import 'package:mathgptpro_mclient_flutter/component/dialog/confirm_dialog.dart';
 import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
@@ -20,104 +15,6 @@ class HomePageMyView extends StatefulWidget {
 }
 
 class _HomePageMyViewState extends State<HomePageMyView> {
-  Future<void> confirmCustomerSheet() async {
-    try {
-      // 3. display the customer sheet.
-      final result = await Stripe.instance.presentCustomerSheet();
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-              'Payment preferences modfied completed option selected: ${result?.paymentOption?.label}}'),
-        ),
-      );
-    } on Exception catch (e) {
-      log("2");
-      log(e.toString());
-
-      if (e is StripeException) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error from Stripe: ${e.error.localizedMessage}'),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Unforeseen error: ${e}'),
-          ),
-        );
-      }
-    }
-  }
-
-  Future<Map<String, dynamic>> _createTestCustomerSheet() async {
-    final url = Uri.parse('http://mathgptpro.ihk.fghk.top/customer-sheet');
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: json.encode({
-        'a': 'a',
-      }),
-    );
-    final body = json.decode(response.body);
-    if (body['error'] != null) {
-      throw Exception(body['error']);
-    }
-    return body;
-  }
-
-  Future<void> initCustomerSheet() async {
-    try {
-      // 1. retrieve customer from backend.
-      final data = await _createTestCustomerSheet();
-
-      // create some billingdetails
-      final billingDetails = BillingDetails(
-        name: 'Flutter Stripe',
-        email: 'email@stripe.com',
-        phone: '+48888000888',
-        address: Address(
-          city: 'Houston',
-          country: 'US',
-          line1: '1459  Circle Drive',
-          line2: '',
-          state: 'Texas',
-          postalCode: '77063',
-        ),
-      ); // mocked data for tests
-
-      // 2. initialize the customer sheet
-      await Stripe.instance.initCustomerSheet(
-        customerSheetInitParams: CustomerSheetInitParams(
-          // Main params
-          setupIntentClientSecret: data['setupIntent'],
-          merchantDisplayName: 'Flutter Stripe Store Demo',
-          // Customer params
-          customerId: data['customer'],
-          customerEphemeralKeySecret: data['ephemeralKeySecret'],
-          style: ThemeMode.system,
-          defaultBillingDetails: billingDetails,
-        ),
-      );
-    } catch (e) {
-      log("1");
-      log(e.toString());
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-      rethrow;
-    }
-  }
-
-  Future<void> stripePay() async {
-    await initCustomerSheet();
-    await confirmCustomerSheet();
-  }
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UserController>(builder: (userController) {
@@ -516,28 +413,25 @@ class _HomePageMyViewState extends State<HomePageMyView> {
                           ),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: stripePay,
-                        child: Container(
-                          height: 40.w,
-                          width: Get.width,
-                          margin: EdgeInsets.only(top: 16.w),
-                          decoration: ShapeDecoration(
-                            color: UiResource.primaryBlue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100.r),
-                            ),
+                      Container(
+                        height: 40.w,
+                        width: Get.width,
+                        margin: EdgeInsets.only(top: 16.w),
+                        decoration: ShapeDecoration(
+                          color: UiResource.primaryBlue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100.r),
                           ),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 10.w),
-                            child: const Text(
-                              'Upgrade Plan',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ),
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 10.w),
+                          child: const Text(
+                            'Upgrade Plan',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
