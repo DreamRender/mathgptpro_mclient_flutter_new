@@ -101,21 +101,6 @@ class _DialogReceiveCardState extends State<DialogReceiveCard> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                padding: EdgeInsets.all(8.w),
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    side:
-                        BorderSide(width: 1.w, color: const Color(0xFF9DCAFF)),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                child: Image(
-                    height: 12.w,
-                    width: 12.w,
-                    image: const AssetImage(
-                        "public/asset/icon/icon_bookmarks.png")),
-              ),
               //ThumbUpButton
               GestureDetector(
                 onTap: () {

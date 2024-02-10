@@ -929,6 +929,9 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
 
     //渲染完成后，对内容进行加载
     Future.delayed(Duration.zero).then((value) async {
+      //重新渲染（开启新对话）
+      _contentController.reload();
+
       if (widget.sessionUuid == null) {
         return;
       }
@@ -941,9 +944,16 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
 
   @override
   void dispose() {
-    questionImageController.empty();
-    _contentEditController.dispose();
-    _scrollController.dispose();
+    try {
+      questionImageController.empty();
+      _contentEditController.dispose();
+      _scrollController.dispose();
+    } catch (e) {
+      // 无法避免questionImageController造成的
+      // setState() or markNeedsBuild() called when widget tree was locked.
+      // 问题
+      log(e.toString());
+    }
     super.dispose();
   }
 
@@ -1000,23 +1010,33 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
                           ],
                         ),
                         const Spacer(),
-                        exampleMode
-                            ? Container()
-                            : Image(
-                                width: 24.w,
-                                height: 24.w,
-                                color: UiResource.primaryBlack,
-                                image: const AssetImage(
-                                    "public/asset/icon/question_page_bookmark.png")),
+                        // exampleMode
+                        //     ? Container()
+                        //     : Image(
+                        //         width: 24.w,
+                        //         height: 24.w,
+                        //         color: UiResource.primaryBlack,
+                        //         image: const AssetImage(
+                        //             "public/asset/icon/question_page_bookmark.png")),
                         SizedBox(
                           width: exampleMode ? 0 : 24.w,
                         ),
-                        Image(
-                            width: 24.w,
-                            height: 24.w,
-                            color: exampleMode ? null : UiResource.primaryBlack,
-                            image: const AssetImage(
-                                "public/asset/icon/chat_page_chat_icon.png")),
+                        GestureDetector(
+                          onTap: () {
+                            //打开新页面
+                            Get.off(
+                                () =>
+                                    const QuestionAnswerPage(sessionUuid: null),
+                                preventDuplicates: false);
+                          },
+                          child: Image(
+                              width: 24.w,
+                              height: 24.w,
+                              color:
+                                  exampleMode ? null : UiResource.primaryBlack,
+                              image: const AssetImage(
+                                  "public/asset/icon/chat_page_chat_icon.png")),
+                        ),
                       ],
                     ),
                   ),
@@ -1069,4 +1089,10 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
 class ContentController extends GetxController {
   SessionModelEnum model = SessionModelEnum.pro;
   List<SingleDialogDto> singleDialogDtoList = [];
+
+  reload() {
+    singleDialogDtoList = [];
+    model = SessionModelEnum.pro;
+    update();
+  }
 }
