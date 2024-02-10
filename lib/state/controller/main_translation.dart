@@ -53,7 +53,7 @@ class MainTranslation extends Translations {
           '在此发送消息...': "Enter your question here",
           '解答已终止': "Stopped",
           '确认删除？': "Confirm delete?",
-          '删除成功': "success",
+          '成功': "success",
           '删除失败': "delete failed",
           '更多': "more",
           '关于我们': "About Us",

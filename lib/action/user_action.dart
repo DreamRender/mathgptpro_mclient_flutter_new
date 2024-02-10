@@ -26,7 +26,7 @@ class UserAction {
   }
 
   /// 更新用户教育信息
-  Future<void> updateUserEducationInfo() async {
+  Future<void> updateUserInfo() async {
     ConstantController constantController = Get.find();
     UserController userController = Get.find();
 
@@ -36,6 +36,8 @@ class UserAction {
 
     //更新教育信息
     userController.education.value = educationInfoMap[userInfo.eduId!] ?? "";
+    userController.userLastName.value = userInfo.lastName ?? "";
+    userController.userFirstName.value = userInfo.firstName ?? "";
   }
 
   bool userInfoInitByJwt(String jwt) {

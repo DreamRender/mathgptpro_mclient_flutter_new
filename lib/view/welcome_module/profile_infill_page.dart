@@ -121,7 +121,8 @@ class _ProfileInfillPageState extends State<ProfileInfillPage> {
                                   child: Text(
                                     item,
                                     style: TextStyle(
-                                        color: UiResource.primaryGrey),
+                                        color: UiResource.primaryGrey,
+                                        fontWeight: FontWeight.w400),
                                   ),
                                 ))
                             .toList(),

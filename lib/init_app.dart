@@ -111,7 +111,7 @@ class InitApp {
     final result = await Future.wait([
       sessionService.getSessionAll(),
       userAction.updateUserBalance(),
-      userAction.updateUserEducationInfo()
+      userAction.updateUserInfo()
     ]);
 
     globalSessionCache.sessionHistoryDtoList =

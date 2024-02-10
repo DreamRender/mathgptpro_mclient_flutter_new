@@ -3,9 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mathgptpro_mclient_flutter/component/bottom_sheet/upgrade_plan_bottom_sheet.dart';
 import 'package:mathgptpro_mclient_flutter/component/dialog/confirm_dialog.dart';
+import 'package:mathgptpro_mclient_flutter/component/ui_behavior/refocus_component.dart';
 import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
 import 'package:mathgptpro_mclient_flutter/service/user_service.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/user_controller.dart';
+import 'package:mathgptpro_mclient_flutter/view/user_module/profile_edit_page.dart';
 
 class HomePageMyView extends StatefulWidget {
   const HomePageMyView({super.key});
@@ -41,7 +43,8 @@ class _HomePageMyViewState extends State<HomePageMyView> {
         diamondBarWidth = 0;
       }
 
-      return Scaffold(
+      return RefocusComponent(
+          child: Scaffold(
         body: Column(
           children: [
             Container(
@@ -95,11 +98,16 @@ class _HomePageMyViewState extends State<HomePageMyView> {
                               height: 0.09,
                             ),
                           ),
-                          Image(
-                              width: 16.w,
-                              height: 16.w,
-                              image: const AssetImage(
-                                  "public/asset/icon/edit.png"))
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(const ProfileEditPage());
+                            },
+                            child: Image(
+                                width: 16.w,
+                                height: 16.w,
+                                image: const AssetImage(
+                                    "public/asset/icon/edit.png")),
+                          )
                         ],
                       ),
                       SizedBox(
@@ -666,7 +674,7 @@ class _HomePageMyViewState extends State<HomePageMyView> {
             ))
           ],
         ),
-      );
+      ));
     });
   }
 }

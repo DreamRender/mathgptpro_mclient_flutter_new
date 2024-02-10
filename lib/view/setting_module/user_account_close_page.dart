@@ -55,7 +55,7 @@ class UserAccountClosePage extends StatelessWidget {
                   Get.dialog(ConfirmDialog(
                       message: "您是否确认注销账户".tr,
                       onConfirm: () async {
-                        ToastUtils.showInfoToast("成功".tr);
+                        ToastUtils.showInfoToast("修改成功".tr);
                         //关闭页面
                         Get.back();
                         //退出登录

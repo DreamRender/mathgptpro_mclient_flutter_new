@@ -37,7 +37,7 @@ class QuestionMoreBottomSheet extends StatelessWidget {
                 bool result = await sessionService.deleteSessionById(sessionId);
 
                 if (result) {
-                  ToastUtils.showInfoToast("删除成功".tr);
+                  ToastUtils.showInfoToast("成功".tr);
 
                   //在页面中就要退出
                   if (isDeleteInPage) {

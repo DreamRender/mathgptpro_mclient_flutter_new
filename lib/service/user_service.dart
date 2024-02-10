@@ -55,11 +55,9 @@ class UserService {
   }
 
   /// 更新用户信息
-  Future<bool> userProfileUpdate(String firstName, String lastName) async {
-    var data = {
-      "firstName": firstName,
-      "lastName": lastName,
-    };
+  Future<bool> userProfileUpdate(
+      String firstName, String lastName, int eduId) async {
+    var data = {"firstName": firstName, "lastName": lastName, "eduId": eduId};
 
     await _dioUtils.postAu(MainUrl.userProfileUpdate, data: data);
 

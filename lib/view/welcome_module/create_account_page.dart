@@ -150,7 +150,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                   child: Text(
                                     item,
                                     style: TextStyle(
-                                        color: UiResource.primaryGrey),
+                                        color: UiResource.primaryGrey,
+                                        fontWeight: FontWeight.w400),
                                   ),
                                 ))
                             .toList(),
