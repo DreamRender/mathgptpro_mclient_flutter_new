@@ -35,8 +35,7 @@ class MainUrl {
   static String flask = 'https://dev-flask.mathgptpro.com';
 
   /// 历史记录
-  static String sessionHistory =
-      "https://dev-be.mathgptpro.com/session/all/zh-CN";
+  static String sessionHistory = "https://dev-be.mathgptpro.com/session/all/en";
 
   /// 保存输出结果
   static String outputSave =

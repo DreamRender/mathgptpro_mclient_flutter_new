@@ -35,7 +35,12 @@ class UserAction {
     Map<int, String> educationInfoMap = constantController.educationInfoMap;
 
     //更新教育信息
-    userController.education.value = educationInfoMap[userInfo.eduId!] ?? "";
+    if (userInfo.eduId == null) {
+      userController.education.value = "";
+    } else {
+      userController.education.value = educationInfoMap[userInfo.eduId!] ?? "";
+    }
+
     userController.userLastName.value = userInfo.lastName ?? "";
     userController.userFirstName.value = userInfo.firstName ?? "";
   }

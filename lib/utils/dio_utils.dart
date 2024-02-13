@@ -22,11 +22,17 @@ class DioUtils {
 
   /// 检查网络状况
   static Future<bool> checkNetwork() async {
-    //这个函数的Dio要单独做
-    Dio dio = Dio();
-    the_dio.Response response = await dio.head("https://www.baidu.com");
-    log('网络状况：${response.statusCode}');
-    return response.statusCode == 200;
+    try {
+      Dio dio = Dio(BaseOptions(
+          connectTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
+          sendTimeout: const Duration(seconds: 5)));
+      the_dio.Response response = await dio.head("https://www.baidu.com");
+      log('网络状况：${response.statusCode}');
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// 处理用户退出操作

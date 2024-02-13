@@ -64,6 +64,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
     if (educationLevel == null || firstName.isEmpty || lastName.isEmpty) {
       ToastUtils.showSystemToast("请先输入内容哦".tr);
+      setState(() {
+        processing = false;
+      });
       return;
     }
 

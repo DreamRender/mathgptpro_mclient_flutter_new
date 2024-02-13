@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:latext/latext.dart';
+import 'package:mathgptpro_mclient_flutter/action/user_action.dart';
 import 'package:mathgptpro_mclient_flutter/cache/session_cache.dart';
 import 'package:mathgptpro_mclient_flutter/component/pull_to_refresh/common_classic_refresh_header.dart';
 import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
@@ -25,6 +26,8 @@ class HomePageQuestionView extends StatefulWidget {
 class _HomePageQuestionViewState extends State<HomePageQuestionView>
     with AutomaticKeepAliveClientMixin {
   final SessionService sessionService = SessionService();
+
+  final UserAction userAction = UserAction();
 
   late RefreshController refreshController;
 
@@ -61,6 +64,10 @@ class _HomePageQuestionViewState extends State<HomePageQuestionView>
     setState(() {});
 
     refreshController.refreshCompleted();
+
+    //异步刷新用户信息
+    userAction.updateUserInfo();
+    userAction.updateUserBalance();
   }
 
   /// 排序

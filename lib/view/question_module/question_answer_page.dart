@@ -10,11 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mathgptpro_mclient_flutter/action/user_action.dart';
+import 'package:mathgptpro_mclient_flutter/component/bottom_sheet/upgrade_plan_bottom_sheet.dart';
 import 'package:mathgptpro_mclient_flutter/component/ui_behavior/refocus_component.dart';
 import 'package:mathgptpro_mclient_flutter/constant/main_url.dart';
 import 'package:mathgptpro_mclient_flutter/constant/session_model_enum.dart';
 import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
-import 'package:mathgptpro_mclient_flutter/model/balance_info.dart';
 import 'package:mathgptpro_mclient_flutter/model/dialog_dto.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_dto.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_input_dto.dart';
@@ -62,6 +62,8 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
   SessionDto? sessionDto;
 
   bool modeSetModalOpen = false;
+
+  bool onUploadImage = false;
 
   bool onSaveSessionInput = false;
 
@@ -135,10 +137,13 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
   }
 
   /// 更新Session信息
-  Future<void> updateSessionData(String sessionUuid) async {
-    setState(() {
-      onSessionDataLoading = true;
-    });
+  Future<void> updateSessionData(String sessionUuid,
+      {bool showLoading = true}) async {
+    if (showLoading) {
+      setState(() {
+        onSessionDataLoading = true;
+      });
+    }
 
     //重新更新一下SessionDto
     sessionDto = await _getSessionData(sessionUuid);
@@ -150,9 +155,11 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
     _contentController.singleDialogDtoList = singleDialogDtoList;
     _contentController.update();
 
-    setState(() {
-      onSessionDataLoading = false;
-    });
+    if (showLoading) {
+      setState(() {
+        onSessionDataLoading = false;
+      });
+    }
   }
 
   /// 加载数据
@@ -179,10 +186,10 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
     DialogDto dialogDto =
         DialogDto(model: model, singleDialogDtoList: singleDialogDtoList);
 
-    // 更新额度信息
-    BalanceInfo balanceInfo = await userService.updateUserBalanceHistory(model);
-
-    await userAction.updateUserBalance(balanceInfo: balanceInfo);
+    // 异步更新用户balance
+    userService.updateUserBalanceHistory(model).then((value) {
+      userAction.updateUserBalance(balanceInfo: value);
+    });
 
     // 获取JWT
     String? userToken = await _dioUtils.getUserTokenWithUpdateUserInfo();
@@ -204,20 +211,20 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
     subscription = rs.data!.stream.listen((event) async {
       //解答被终止
       if (aborted) {
-        //第一步Cancel Stream
+        // 第一步Cancel Stream
         subscription.cancel();
 
-        //第二步更新状态
+        // 第二步更新状态
         setState(() {
           //复位
           aborted = false;
           onGenerateAnswer = false;
         });
 
-        //第三步执行数据
-        await _saveSessionOutput();
-
-        await updateSessionData(sessionDto!.uuid!);
+        // 第三步执行数据（可异步）
+        _saveSessionOutput();
+        // showLoading设置为false，不然终止之后还会跳动一下
+        updateSessionData(sessionDto!.uuid!, showLoading: false);
 
         return;
       }
@@ -352,7 +359,10 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
 
   /// 判断是否正在加载
   isLoading() {
-    return onSaveSessionInput || onSessionDataLoading || onGenerateAnswer;
+    return onUploadImage ||
+        onSaveSessionInput ||
+        onSessionDataLoading ||
+        onGenerateAnswer;
   }
 
   /// 取消焦点
@@ -376,7 +386,7 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
     }
 
     if (!isBalanceAvailable()) {
-      ToastUtils.showSystemToast("模型额度不足".tr);
+      Get.bottomSheet(const UpgradePlanBottomSheet());
       return;
     }
 
@@ -388,8 +398,14 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
     String? fileName;
 
     if (file != null && uint8list != null) {
+      setState(() {
+        onUploadImage = true;
+      });
       filePath = await _sessionService.uploadImage(file, uint8list);
       fileName = filePath!.split('/').last;
+      setState(() {
+        onUploadImage = false;
+      });
     }
 
     //sessionId后有？判定，会自动赋值null
@@ -786,6 +802,9 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
             children: [
               GestureDetector(
                 onTap: () {
+                  setState(() {
+                    modeSetModalOpen = false;
+                  });
                   _contentController.model = SessionModelEnum.pro;
                   _contentController.update();
                 },
@@ -827,6 +846,9 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
               ),
               GestureDetector(
                 onTap: () {
+                  setState(() {
+                    modeSetModalOpen = false;
+                  });
                   _contentController.model = SessionModelEnum.max;
                   _contentController.update();
                 },
@@ -902,7 +924,9 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  onGenerateAnswer ? getStopButton() : getImageSelectGroup(),
+                  onGenerateAnswer && !aborted
+                      ? getStopButton()
+                      : getImageSelectGroup(),
                   getInputTextField()
                 ],
               ),
@@ -923,6 +947,10 @@ class _QuestionAnswerPageState extends State<QuestionAnswerPage>
   @override
   void initState() {
     super.initState();
+
+    //异步刷新用户信息
+    userAction.updateUserInfo();
+    userAction.updateUserBalance();
 
     //判断是否为例题
     exampleMode = (sessionDto?.uuid ?? "").contains("example");
