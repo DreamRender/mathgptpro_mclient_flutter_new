@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
     bool result = await userService.userLogin(account, password);
     if (result) {
       //初始化数据
-      await InitApp().userDataInit();
+      await InitApp().dataInit();
       //关闭Dialog
       Get.back();
       Get.offAll(() => const IntroductionPage1());

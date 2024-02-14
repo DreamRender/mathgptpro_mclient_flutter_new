@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:mathgptpro_mclient_flutter/cache/system_cache.dart';
 import 'package:mathgptpro_mclient_flutter/init_app.dart';
+import 'package:mathgptpro_mclient_flutter/utils/dio_utils.dart';
 import 'package:mathgptpro_mclient_flutter/view/app_widget.dart';
 
 Future<void> main() async {
@@ -15,8 +17,13 @@ Future<void> main() async {
   await initApp.frameworkInit();
   await initApp.userInterfaceControlInit();
   await initApp.sdkInit();
-  await initApp.appDataInit();
-  await initApp.userDataInit();
+
+  globalSystemCache.networkCheck = await DioUtils.checkNetwork();
+
+  //注意修改NetworkCheckPage的内容
+  if (globalSystemCache.networkCheck) {
+    await initApp.dataInit();
+  }
 
   runApp(const AppWidget());
 

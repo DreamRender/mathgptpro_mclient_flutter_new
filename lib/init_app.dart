@@ -70,14 +70,20 @@ class InitApp {
   Future<void> sdkInit() async {
     SentryFlutter.init((options) {
       options.dsn =
-      'https://354b96952db30731c3d4704e53fec55d@o984263.ingest.sentry.io/4505850842316800';
+          'https://354b96952db30731c3d4704e53fec55d@o984263.ingest.sentry.io/4505850842316800';
       //TODO Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring. We recommend adjusting this value in production.
       options.tracesSampleRate = 0.1;
     });
   }
 
+  ///应用数据初始化
+  Future<void> dataInit() async {
+    await _appDataInit();
+    await _userDataInit();
+  }
+
   /// 系统级数据初始化
-  Future<void> appDataInit() async {
+  Future<void> _appDataInit() async {
     final resultList = await Future.wait([
       systemService.currentVersionAvailable(),
       systemAction.updateEducationList()
@@ -87,7 +93,7 @@ class InitApp {
   }
 
   /// 用户级数据初始化
-  Future<void> userDataInit() async {
+  Future<void> _userDataInit() async {
     //检查版本信息
     if (!globalSystemCache.currentVersionAvailable) {
       log("-------------------------");

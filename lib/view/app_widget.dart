@@ -8,7 +8,22 @@ import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/main_translation.dart';
 import 'package:mathgptpro_mclient_flutter/view/home_module/home_page.dart';
 import 'package:mathgptpro_mclient_flutter/view/systen_module/app_version_update_page.dart';
+import 'package:mathgptpro_mclient_flutter/view/systen_module/newtork_check_page.dart';
 import 'package:mathgptpro_mclient_flutter/view/welcome_module/welcome_page.dart';
+
+Widget getReturnPage() {
+  if (globalSystemCache.currentVersionAvailable == false) {
+    return const AppVersionUpdatePage();
+  } else if (globalSystemCache.networkCheck == false) {
+    return const NetworkCheckPage();
+  } else {
+    if (globalUserCache.login) {
+      return const HomePage();
+    } else {
+      return const WelcomePage();
+    }
+  }
+}
 
 class AppWidget extends StatefulWidget {
   const AppWidget({super.key});
@@ -20,17 +35,7 @@ class AppWidget extends StatefulWidget {
 class _AppWidgetState extends State<AppWidget> {
   @override
   Widget build(BuildContext context) {
-    Widget page;
-
-    if (globalSystemCache.currentVersionAvailable == false) {
-      page = const AppVersionUpdatePage();
-    } else {
-      if (globalUserCache.login) {
-        page = const HomePage();
-      } else {
-        page = const WelcomePage();
-      }
-    }
+    Widget page = getReturnPage();
 
     return GetMaterialApp(
       //title很重要，华为应用商店上架会检查
