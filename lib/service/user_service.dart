@@ -94,7 +94,7 @@ class UserService {
 
   /// 获取Education List
   Future<List<EducationInfo>> getEducationList() async {
-    dio.Response response = await _dioUtils.getAu(MainUrl.getEducationList);
+    dio.Response response = await _dioUtils.get(MainUrl.getEducationList);
 
     List<EducationInfo> list = List<EducationInfo>.from(json
         .decode(response.data)

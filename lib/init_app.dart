@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -88,6 +90,8 @@ class InitApp {
   Future<void> userDataInit() async {
     //检查版本信息
     if (!globalSystemCache.currentVersionAvailable) {
+      log("-------------------------");
+      log("版本过期，不执行userDataInit");
       return;
     }
 
@@ -115,6 +119,6 @@ class InitApp {
     ]);
 
     globalSessionCache.sessionHistoryDtoList =
-        result[0] as List<SessionHistoryDto>;
+    result[0] as List<SessionHistoryDto>;
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dio/dio.dart' as the_dio;
 import 'package:dio/dio.dart';
@@ -23,12 +24,7 @@ class DioUtils {
   /// 检查网络状况
   static Future<bool> checkNetwork() async {
     try {
-      Dio dio = Dio(BaseOptions(
-          connectTimeout: const Duration(seconds: 5),
-          receiveTimeout: const Duration(seconds: 5),
-          sendTimeout: const Duration(seconds: 5)));
-      the_dio.Response response = await dio.head("https://www.baidu.com");
-      log('网络状况：${response.statusCode}');
+      await InternetAddress.lookup('example.com');
       return true;
     } catch (e) {
       return false;
