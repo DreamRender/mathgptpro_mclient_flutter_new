@@ -86,7 +86,7 @@ class _PaymentPageState extends State<PaymentPage> {
               ),
               GestureDetector(
                 onTap: () {
-                  Get.to(PaymentSuccessPage());
+                  Get.to(() => const PaymentSuccessPage());
                 },
                 child: Container(
                   height: 40.w,
@@ -123,7 +123,7 @@ class _PaymentPageState extends State<PaymentPage> {
               SizedBox(
                 height: 24.w,
               ),
-              Text(
+              const Text(
                 'Or pay with credit card',
                 style: TextStyle(
                   fontSize: 14,

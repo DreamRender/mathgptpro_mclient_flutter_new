@@ -13,7 +13,7 @@ class IntroductionPage1 extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Container(
+          SizedBox(
             width: Get.width,
             child: Column(
               children: [

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
-import 'package:mathgptpro_mclient_flutter/view/home_module/home_page.dart';
+import 'package:mathgptpro_mclient_flutter/view/app_widget.dart';
 
 class IntroductionPage4 extends StatelessWidget {
   const IntroductionPage4({super.key});
@@ -115,7 +115,7 @@ class IntroductionPage4 extends StatelessWidget {
               ),
               child: GestureDetector(
                 onTap: () {
-                  Get.offAll(() => const HomePage());
+                  Get.offAll(() => getReturnPage());
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 10.w),

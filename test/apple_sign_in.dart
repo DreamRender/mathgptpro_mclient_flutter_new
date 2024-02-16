@@ -24,7 +24,7 @@ class SignInDemo extends StatefulWidget {
 }
 
 class _SignInDemoState extends State<SignInDemo> {
-  AuthorizationCredentialAppleID? credential = null;
+  AuthorizationCredentialAppleID? credential;
 
   @override
   Widget build(BuildContext context) {

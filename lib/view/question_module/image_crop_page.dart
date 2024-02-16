@@ -29,7 +29,7 @@ class ImageCropPage extends StatefulWidget {
   final bool isRedirectToQuestionPage;
 
   @override
-  _ImageCropPageState createState() => _ImageCropPageState();
+  State<ImageCropPage> createState() => _ImageCropPageState();
 }
 
 class _ImageCropPageState extends State<ImageCropPage> {

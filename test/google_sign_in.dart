@@ -156,7 +156,7 @@ class _SignInDemoState extends State<SignInDemo> {
           // See: src/sign_in_button.dart
           MaterialButton(
             onPressed: _handleSignIn,
-            child: Text("_handleSignIn"),
+            child: const Text("_handleSignIn"),
           ),
         ],
       );

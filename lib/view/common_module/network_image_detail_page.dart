@@ -18,7 +18,7 @@ class NetworkImageDetailPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _NetworkImageDetailPageState createState() => _NetworkImageDetailPageState();
+  State<NetworkImageDetailPage> createState() => _NetworkImageDetailPageState();
 }
 
 class _NetworkImageDetailPageState extends State<NetworkImageDetailPage> {

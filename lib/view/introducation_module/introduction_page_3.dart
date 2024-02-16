@@ -13,7 +13,7 @@ class IntroductionPage3 extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Container(
+          SizedBox(
             width: Get.width,
             child: Column(
               children: [
@@ -64,7 +64,7 @@ class IntroductionPage3 extends StatelessWidget {
                             TextSpan(
                               text: ' for everyday tasks',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w500,
                                 color: UiResource.primaryBlack,
                               ),
@@ -102,7 +102,7 @@ class IntroductionPage3 extends StatelessWidget {
                             TextSpan(
                               text: ' for complex problem solving',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w500,
                                 color: UiResource.primaryBlack,
                               ),

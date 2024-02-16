@@ -16,8 +16,8 @@ class _TestViewState extends State<TestView> {
         children: [
           MaterialButton(
             onPressed: () {},
-            child: Text("data"),
             color: UiResource.primaryBlue,
+            child: const Text("data"),
           )
         ],
       ),
