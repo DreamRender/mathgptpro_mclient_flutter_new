@@ -1,17 +1,14 @@
 import 'package:clipboard/clipboard.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:latext/latext.dart';
+import 'package:mathgptpro_mclient_flutter/constant/session_feedback_enum.dart';
 import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
-import 'package:mathgptpro_mclient_flutter/model/session_dto.dart';
 import 'package:mathgptpro_mclient_flutter/service/session_service.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/dialog_controller.dart';
 import 'package:mathgptpro_mclient_flutter/utils/latex_utils.dart';
 import 'package:mathgptpro_mclient_flutter/utils/toast_utils.dart';
-
-import '../../../constant/session_feedback_enum.dart';
 
 class DialogReceiveCard extends StatefulWidget {
   final String outputText;
