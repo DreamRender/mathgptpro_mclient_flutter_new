@@ -127,9 +127,6 @@ class ToastUtils {
 
   /// 成功
   static void showInfoToast(String message, {int displaySeconds = 3}) {
-    //先关闭键盘（防止遮挡）
-    FocusScope.of(Get.context!).unfocus();
-
     FToast? fToast = _getFToast();
     //如果获取到的Toast是null，就执行系统操作
     if (fToast == null) {

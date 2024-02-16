@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart' as dio;
-import 'package:mathgptpro_mclient_flutter/model/app_version_dto.dart';
-import 'package:mathgptpro_mclient_flutter/constant/main_url.dart';
 import 'package:mathgptpro_mclient_flutter/constant/app_info.dart';
+import 'package:mathgptpro_mclient_flutter/constant/main_url.dart';
+import 'package:mathgptpro_mclient_flutter/model/app_version_dto.dart';
 import 'package:mathgptpro_mclient_flutter/utils/dio_utils.dart';
 
 class SystemService {

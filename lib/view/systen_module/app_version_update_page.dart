@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:mathgptpro_mclient_flutter/constant/main_url.dart';
 import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
-import 'package:mathgptpro_mclient_flutter/view/welcome_module/welcome_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppVersionUpdatePage extends StatelessWidget {
   const AppVersionUpdatePage({super.key});
@@ -50,20 +51,24 @@ class AppVersionUpdatePage extends StatelessWidget {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                Get.offAll(() => const WelcomePage());
-              },
-              child: Container(
-                height: 40.w,
-                width: 326.w,
-                margin: EdgeInsets.only(top: 80.w),
-                decoration: ShapeDecoration(
-                  color: UiResource.primaryBlue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100.r),
-                  ),
+            Container(
+              height: 40.w,
+              width: 303.w,
+              margin: EdgeInsets.only(top: 32.w),
+              decoration: ShapeDecoration(
+                color: UiResource.primaryBlue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100.r),
                 ),
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  if (GetPlatform.isAndroid) {
+                    launchUrl(Uri.parse(MainUrl.googlePlayUrl));
+                  } else {
+                    launchUrl(Uri.parse(MainUrl.appStoreUrl));
+                  }
+                },
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 10.w),
                   child: const Text(
@@ -77,7 +82,7 @@ class AppVersionUpdatePage extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),

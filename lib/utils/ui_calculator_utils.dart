@@ -19,10 +19,10 @@ class UiCalculatorUtils {
       return word;
     }
     String breakWord = ' ';
-    word.runes.forEach((element) {
+    for (var element in word.runes) {
       breakWord += String.fromCharCode(element);
       breakWord += '\u200B';
-    });
+    }
     return breakWord;
   }
 }

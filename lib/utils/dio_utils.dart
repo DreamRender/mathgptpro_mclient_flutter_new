@@ -25,6 +25,7 @@ class DioUtils {
   static Future<bool> checkNetwork() async {
     try {
       await InternetAddress.lookup('example.com');
+      log("网络状态检查完成");
       return true;
     } catch (e) {
       return false;
@@ -117,6 +118,7 @@ class DioUtils {
 
     if (token == null) {
       logoutHandler();
+      return the_dio.Response(data: null, requestOptions: RequestOptions());
     }
 
     String userToken = "Bearer $token";
@@ -133,6 +135,7 @@ class DioUtils {
 
     if (token == null) {
       logoutHandler();
+      return the_dio.Response(data: null, requestOptions: RequestOptions());
     }
 
     String userToken = "Bearer $token";
@@ -151,6 +154,7 @@ class DioUtils {
 
     if (token == null) {
       logoutHandler();
+      return the_dio.Response(data: null, requestOptions: RequestOptions());
     }
 
     String userToken = "Bearer $token";

@@ -11,16 +11,19 @@ import 'package:mathgptpro_mclient_flutter/view/systen_module/app_version_update
 import 'package:mathgptpro_mclient_flutter/view/systen_module/newtork_check_page.dart';
 import 'package:mathgptpro_mclient_flutter/view/welcome_module/welcome_page.dart';
 
+///确定返回页顺序
 Widget getReturnPage() {
+  //先比较应用版本
+  //再比较是否登录，如果没登录就先让用户登录，登录时进行数据初始化
   if (globalSystemCache.currentVersionAvailable == false) {
     return const AppVersionUpdatePage();
-  } else if (globalSystemCache.networkCheck == false) {
-    return const NetworkCheckPage();
+  } else if (!globalUserCache.login) {
+    return const WelcomePage();
   } else {
-    if (globalUserCache.login) {
-      return const HomePage();
+    if (globalSystemCache.networkCheck == false) {
+      return const NetworkCheckPage();
     } else {
-      return const WelcomePage();
+      return const HomePage();
     }
   }
 }

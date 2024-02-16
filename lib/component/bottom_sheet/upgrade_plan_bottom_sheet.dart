@@ -26,7 +26,7 @@ class UpgradePlanBottomSheet extends StatelessWidget {
                     height: 24.w,
                     width: 24.w,
                     image:
-                    const AssetImage("public/asset/icon/upgrade_icon.png"),
+                        const AssetImage("public/asset/icon/upgrade_icon.png"),
                   ),
                 ),
                 SizedBox(

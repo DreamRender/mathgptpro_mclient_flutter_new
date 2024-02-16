@@ -27,10 +27,10 @@ class _NetworkCheckPageState extends State<NetworkCheckPage> {
     globalSystemCache.networkCheck = await DioUtils.checkNetwork();
 
     if (globalSystemCache.networkCheck) {
-      await initApp.dataInit();
+      await initApp.dataInit(networkCheck: false);
+      Get.offAll(() => getReturnPage());
+      return;
     }
-
-    Get.offAll(() => getReturnPage());
 
     setState(() {
       loading = false;

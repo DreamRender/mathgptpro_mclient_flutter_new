@@ -10,18 +10,17 @@ import 'package:mathgptpro_mclient_flutter/cache/session_cache.dart';
 import 'package:mathgptpro_mclient_flutter/cache/system_cache.dart';
 import 'package:mathgptpro_mclient_flutter/cache/user_cache.dart';
 import 'package:mathgptpro_mclient_flutter/constant/key_value_storage.dart';
+import 'package:mathgptpro_mclient_flutter/constant/ui_resource.dart';
 import 'package:mathgptpro_mclient_flutter/model/session_history_dto.dart';
 import 'package:mathgptpro_mclient_flutter/service/session_service.dart';
 import 'package:mathgptpro_mclient_flutter/service/system_service.dart';
 import 'package:mathgptpro_mclient_flutter/service/user_service.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/constant_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/dialog_controller.dart';
-import 'package:mathgptpro_mclient_flutter/state/controller/navigation_index_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/question_image_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/session_controller.dart';
 import 'package:mathgptpro_mclient_flutter/state/controller/user_controller.dart';
 import 'package:mathgptpro_mclient_flutter/utils/dio_utils.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 class InitApp {
   final UserAction userAction = UserAction();
@@ -35,8 +34,6 @@ class InitApp {
   /// 框架初始化
   Future<void> frameworkInit() async {
     await GetStorage.init();
-    //页面控制器
-    Get.put(NavigationIndexController(), permanent: true);
     //图片剪切文件控制器
     Get.put(QuestionImageController(), permanent: true);
     //内容控制器
@@ -52,8 +49,8 @@ class InitApp {
   /// 初始化UI
   Future<void> userInterfaceControlInit() async {
     //横竖屏设置
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    SystemChrome.setPreferredOrientations(UiResource.defaultOrientationList);
+
     // //设置和系统暗黑模式保持一致
     // ThemeUtils.setSystemBrightness();
     // //监听系统的暗黑模式变化
@@ -67,19 +64,18 @@ class InitApp {
   }
 
   /// SDK初始化
-  Future<void> sdkInit() async {
-    SentryFlutter.init((options) {
-      options.dsn =
-          'https://354b96952db30731c3d4704e53fec55d@o984263.ingest.sentry.io/4505850842316800';
-      //TODO Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring. We recommend adjusting this value in production.
-      options.tracesSampleRate = 0.1;
-    });
-  }
+  Future<void> sdkInit() async {}
 
   ///应用数据初始化
-  Future<void> dataInit() async {
-    await _appDataInit();
-    await _userDataInit();
+  Future<void> dataInit({bool networkCheck = true}) async {
+    if (networkCheck) {
+      globalSystemCache.networkCheck = await DioUtils.checkNetwork();
+    }
+
+    if (globalSystemCache.networkCheck) {
+      await _appDataInit();
+      await _userDataInit();
+    }
   }
 
   /// 系统级数据初始化
@@ -125,6 +121,6 @@ class InitApp {
     ]);
 
     globalSessionCache.sessionHistoryDtoList =
-    result[0] as List<SessionHistoryDto>;
+        result[0] as List<SessionHistoryDto>;
   }
 }
